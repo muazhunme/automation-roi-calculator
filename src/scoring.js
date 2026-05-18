@@ -150,6 +150,27 @@ function classifyRoi(monthlySaving) {
   return "Low";
 }
 
+function buildRecommendation(score, profile) {
+  if (score < 45) {
+    return {
+      solution: "Do not automate yet",
+      summary: `This is a ${profile.keywords} process, but the current business case is weak. Automation is not the best next step yet because the expected saving is low or the process is not ready. The better first step is to document the workflow, reduce variation, improve data quality, and revisit automation once the process has more volume or clearer rules.`,
+    };
+  }
+
+  if (score < 62) {
+    return {
+      solution: "Improve the process before automation",
+      summary: `This is a ${profile.keywords} process with some automation potential, but it needs process improvement before build work starts. The recommended next step is to clarify the workflow, remove avoidable manual steps, and confirm the business case before considering ${profile.solution.toLowerCase()}.`,
+    };
+  }
+
+  return {
+    solution: profile.solution,
+    summary: `This is a ${profile.keywords} process. Based on the workload, error level, tool complexity, and process clarity, ${profile.solution.toLowerCase()} is the best-fit recommendation. The estimate suggests about {hours} hours saved per month and roughly {saving} in monthly capacity savings.`,
+  };
+}
+
 function buildRisks(input) {
   const risks = [];
 
@@ -197,16 +218,19 @@ export function calculateAutomationCase(input) {
   const readinessFactor = clamp(readinessScore / 100, 0.25, 0.85);
   const estimatedHoursSaved = Math.round(input.hoursPerWeek * 4.33 * readinessFactor);
   const monthlySaving = Math.round(monthlyCost * readinessFactor);
+  const recommendation = buildRecommendation(readinessScore, profile);
 
   return {
     readinessScore,
     scoreLabel: classifyScore(readinessScore),
-    solution: profile.solution,
+    solution: recommendation.solution,
     monthlySaving,
     estimatedHoursSaved,
     roiCategory: classifyRoi(monthlySaving),
     timeline: profile.timeline,
     risks: buildRisks(input),
-    summary: `This is a ${profile.keywords} process. Based on the workload, error level, tool complexity, and process clarity, ${profile.solution.toLowerCase()} is the best-fit recommendation. The estimate suggests about ${estimatedHoursSaved} hours saved per month and roughly $${monthlySaving.toLocaleString()} in monthly capacity savings.`,
+    summary: recommendation.summary
+      .replace("{hours}", estimatedHoursSaved.toLocaleString())
+      .replace("{saving}", `$${monthlySaving.toLocaleString()}`),
   };
 }
