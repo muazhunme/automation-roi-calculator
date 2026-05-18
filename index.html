@@ -12,6 +12,13 @@
   </head>
   <body>
     <main class="app-shell">
+      <nav class="app-nav" aria-label="Application pages">
+        <button class="page-tab active" type="button" data-page="assessment">Assessment</button>
+        <button class="page-tab" type="button" data-page="how">How it works</button>
+        <button class="page-tab" type="button" data-page="case">Case study</button>
+      </nav>
+
+      <div class="page active" id="assessmentPage">
       <section class="hero">
         <div>
           <p class="eyebrow">Business automation audit</p>
@@ -58,6 +65,19 @@
               <option value="dataEntry">Data entry</option>
               <option value="customerEmails">Customer emails</option>
               <option value="complianceEvidence">Compliance evidence collection</option>
+            </select>
+          </label>
+
+          <label>
+            Industry preset
+            <select id="industry" name="industry">
+              <option value="accounting" selected>Accounting / finance</option>
+              <option value="healthcare">Healthcare</option>
+              <option value="retail">Retail</option>
+              <option value="saas">SaaS</option>
+              <option value="education">Education</option>
+              <option value="logistics">Logistics</option>
+              <option value="realEstate">Real estate</option>
             </select>
           </label>
 
@@ -143,6 +163,12 @@
             <h2 id="solutionTitle">Invoice automation + approval workflow</h2>
           </div>
 
+          <div class="advisor-card">
+            <span>Recommended next move</span>
+            <strong id="decisionTitle">Automate now</strong>
+            <p id="automationStyle">Workflow automation</p>
+          </div>
+
           <div class="score-card">
             <span>Automation readiness</span>
             <strong id="scoreValue">86</strong>
@@ -166,6 +192,10 @@
               <span>Timeline</span>
               <strong id="timeline">4-6 weeks</strong>
             </div>
+            <div>
+              <span>Payback period</span>
+              <strong id="paybackPeriod">2.1 months</strong>
+            </div>
           </div>
 
           <div class="score-breakdown">
@@ -184,6 +214,11 @@
               <strong id="confidenceLabel">High</strong>
               <p id="confidenceScore">86/100 based on clarity, data quality, and complexity.</p>
             </div>
+          </div>
+
+          <div class="insight-block">
+            <h3>Why this recommendation</h3>
+            <ul id="reasonList"></ul>
           </div>
 
           <div class="matrix-card">
@@ -209,6 +244,14 @@
               <span>Estimated yearly saving</span>
               <strong id="yearlySaving">$18,552</strong>
             </div>
+            <div>
+              <span>Estimated build-cost band</span>
+              <strong id="buildCost">$2,500</strong>
+            </div>
+            <div>
+              <span>Build complexity</span>
+              <strong id="complexityLabel">Low</strong>
+            </div>
           </div>
 
           <div class="insight-block">
@@ -219,6 +262,55 @@
           <div class="insight-block">
             <h3>Suggested roadmap</h3>
             <ol id="roadmapList"></ol>
+          </div>
+
+          <div class="insight-grid">
+            <div class="insight-block">
+              <h3>30-day preparation checklist</h3>
+              <ul id="prepList"></ul>
+            </div>
+            <div class="insight-block">
+              <h3>Required inputs</h3>
+              <ul id="requiredInputsList"></ul>
+            </div>
+          </div>
+
+          <div class="insight-grid">
+            <div class="insight-block">
+              <h3>Best first feature</h3>
+              <p id="firstFeature"></p>
+            </div>
+            <div class="insight-block">
+              <h3>Confidence explanation</h3>
+              <p id="confidenceExplanation"></p>
+            </div>
+          </div>
+
+          <div class="insight-block">
+            <h3>Readiness checklist</h3>
+            <ul class="check-list" id="readinessChecklist"></ul>
+          </div>
+
+          <div class="workflow-grid">
+            <div class="insight-block">
+              <h3>Manual workflow</h3>
+              <ol id="manualWorkflow"></ol>
+            </div>
+            <div class="insight-block">
+              <h3>Automated workflow</h3>
+              <ol id="automatedWorkflow"></ol>
+            </div>
+          </div>
+
+          <div class="insight-grid">
+            <div class="insight-block">
+              <h3>Opportunity backlog</h3>
+              <ul id="backlogList"></ul>
+            </div>
+            <div class="insight-block">
+              <h3>Sensitivity analysis</h3>
+              <ul id="sensitivityList"></ul>
+            </div>
           </div>
 
           <div class="insight-block">
@@ -238,6 +330,70 @@
           <h2>Sample scenarios</h2>
         </div>
         <div class="sample-grid" id="sampleGrid"></div>
+      </section>
+      </div>
+
+      <section class="page explainer-page" id="howPage">
+        <div class="section-heading">
+          <p class="eyebrow">Model explanation</p>
+          <h1>How the automation assessment works</h1>
+          <p>
+            The tool separates automation fit from business value so it does not blindly recommend automation.
+            A process can be easy to automate but still not worth doing, or valuable but too risky without preparation.
+          </p>
+        </div>
+
+        <div class="explainer-grid">
+          <article>
+            <h2>Automation fit</h2>
+            <p>Measures whether the process is rule-based, stable, repeatable, low judgement, and technically practical.</p>
+          </article>
+          <article>
+            <h2>Business value</h2>
+            <p>Measures whether the process has enough time cost, urgency, volume, and business impact to justify work.</p>
+          </article>
+          <article>
+            <h2>Decision advisor</h2>
+            <p>Chooses between automate now, improve first, integrate systems first, use decision support, or do not automate yet.</p>
+          </article>
+          <article>
+            <h2>Confidence</h2>
+            <p>Explains how reliable the estimate is based on process clarity, system complexity, judgement, and volume.</p>
+          </article>
+        </div>
+
+        <div class="model-flow">
+          <div>Inputs</div>
+          <div>Fit and value scoring</div>
+          <div>Decision advisor</div>
+          <div>Roadmap and report</div>
+        </div>
+      </section>
+
+      <section class="page case-page" id="casePage">
+        <div class="section-heading">
+          <p class="eyebrow">Portfolio write-up</p>
+          <h1>Case study: automation discovery for manual business workflows</h1>
+          <p>
+            This project simulates the first stage of an automation consulting engagement: understanding a manual process,
+            estimating value, identifying risks, and recommending the safest next move.
+          </p>
+        </div>
+
+        <div class="case-grid">
+          <article>
+            <h2>Problem</h2>
+            <p>Businesses often automate too early or choose the wrong tool before understanding process readiness.</p>
+          </article>
+          <article>
+            <h2>Approach</h2>
+            <p>I built a transparent rules-based model that compares readiness, savings, complexity, confidence, and risk.</p>
+          </article>
+          <article>
+            <h2>Result</h2>
+            <p>The app produces an explainable recommendation, roadmap, checklist, workflow comparison, and printable report.</p>
+          </article>
+        </div>
       </section>
     </main>
 

@@ -21,6 +21,20 @@ This project models that early discovery step with transparent, client-side scor
 - ROI category
 - Impact versus effort matrix
 - Confidence score
+- Automation Decision Advisor
+- Reason codes for every recommendation
+- 30-day preparation checklist
+- Required data and system inputs
+- Automation readiness checklist
+- Risk severity levels
+- Estimated build complexity
+- ROI payback period
+- Manual vs automated workflow comparison
+- Opportunity backlog
+- Industry presets
+- AI vs RPA vs integration recommendation
+- Sensitivity analysis
+- Case study and model explanation pages
 - Recommended automation type
 - Implementation timeline
 - Risk flags

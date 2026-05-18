@@ -34,6 +34,33 @@ select {
   padding: 32px 0 48px;
 }
 
+.app-nav {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.page-tab {
+  min-height: 38px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  color: var(--ink);
+}
+
+.page-tab.active,
+.page-tab:hover {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
@@ -59,9 +86,12 @@ select {
 }
 
 .hero-panel,
+.advisor-card,
 .audit-form,
 .results,
-.sample-card {
+.sample-card,
+.explainer-grid article,
+.case-grid article {
   border: 1px solid var(--line);
   background: var(--panel);
   border-radius: 8px;
@@ -94,6 +124,31 @@ select {
 .hero-panel strong {
   font-size: 1.45rem;
   line-height: 1.15;
+}
+
+.advisor-card {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+  border-left: 5px solid var(--accent);
+}
+
+.advisor-card span {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.advisor-card strong {
+  color: var(--accent-dark);
+  font-size: 1.55rem;
+}
+
+.advisor-card p {
+  margin: 0;
+  color: var(--muted);
 }
 
 .workspace {
@@ -207,12 +262,12 @@ button.secondary:hover {
 .metric-grid,
 .cost-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 12px;
 }
 
 .cost-grid {
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
 
 .metric-grid div,
@@ -336,6 +391,13 @@ button.secondary:hover {
   padding-top: 16px;
 }
 
+.insight-grid,
+.workflow-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
 .insight-block h3 {
   margin: 0 0 8px;
 }
@@ -350,6 +412,32 @@ button.secondary:hover {
 .insight-block ul {
   margin: 0;
   padding-left: 18px;
+}
+
+.insight-block ol {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.check-done,
+.check-open {
+  display: inline-block;
+  margin-right: 8px;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.check-done {
+  background: #dff3ea;
+  color: #176044;
+}
+
+.check-open {
+  background: #fff0d2;
+  color: #8a5a04;
 }
 
 .report-watermark {
@@ -396,6 +484,70 @@ button.secondary:hover {
   color: var(--muted);
 }
 
+.section-heading {
+  max-width: 880px;
+  padding: 40px 0 22px;
+}
+
+.section-heading h1 {
+  margin: 6px 0 12px;
+  font-size: clamp(2.2rem, 5vw, 4.6rem);
+  line-height: 1;
+}
+
+.section-heading p {
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.explainer-grid,
+.case-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.case-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.explainer-grid article,
+.case-grid article {
+  padding: 22px;
+}
+
+.explainer-grid h2,
+.case-grid h2 {
+  margin: 0 0 10px;
+}
+
+.explainer-grid p,
+.case-grid p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.model-flow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.model-flow div {
+  border-radius: 8px;
+  background: var(--accent-dark);
+  color: #ffffff;
+  font-weight: 900;
+  min-height: 84px;
+  display: grid;
+  place-items: center;
+  padding: 14px;
+  text-align: center;
+}
+
 @media (max-width: 900px) {
   .hero,
   .workspace {
@@ -409,6 +561,11 @@ button.secondary:hover {
   .metric-grid,
   .cost-grid,
   .score-breakdown,
+  .insight-grid,
+  .workflow-grid,
+  .explainer-grid,
+  .case-grid,
+  .model-flow,
   .sample-grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -432,8 +589,17 @@ button.secondary:hover {
   .metric-grid,
   .cost-grid,
   .score-breakdown,
+  .insight-grid,
+  .workflow-grid,
+  .explainer-grid,
+  .case-grid,
+  .model-flow,
   .sample-grid {
     grid-template-columns: 1fr;
+  }
+
+  .app-nav {
+    flex-wrap: wrap;
   }
 }
 
@@ -444,7 +610,10 @@ button.secondary:hover {
 
   .hero,
   .audit-form,
-  .samples {
+  .samples,
+  .app-nav,
+  .explainer-page,
+  .case-page {
     display: none;
   }
 
