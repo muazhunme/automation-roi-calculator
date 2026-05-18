@@ -1,0 +1,115 @@
+# Business Automation ROI Calculator
+
+A browser-based automation audit tool that estimates whether a manual business process is worth automating.
+
+The project is designed as a practical portfolio piece for automation, CRM, RPA, analytics, and business intelligence roles. It turns process inputs into an automation readiness score, estimated monthly savings, recommended automation type, implementation timeline, and delivery risk flags.
+
+## Why This Project Exists
+
+Automation companies often begin with a discovery or audit phase before recommending RPA, CRM workflows, invoice automation, reporting automation, AI bots, or system integrations.
+
+This project models that early discovery step with transparent, client-side scoring logic.
+
+## Features
+
+- Automation intake form
+- Readiness score from 0 to 100
+- Estimated monthly cost savings
+- Estimated hours saved per month
+- ROI category
+- Recommended automation type
+- Implementation timeline
+- Risk flags
+- Sample business scenarios
+- No backend, login, paid API, or database required
+
+## Sample Use Cases
+
+- Invoice processing
+- CRM updates
+- Weekly reporting
+- Approval workflows
+- Contract renewal tracking
+- Compliance evidence collection
+- Manual data entry
+- Customer email routing
+
+## Tech Stack
+
+- HTML
+- CSS
+- JavaScript
+- Browser-native ES modules
+- Node.js static preview server
+
+## Project Structure
+
+```text
+automation-roi-calculator/
+  index.html
+  styles.css
+  server.mjs
+  src/
+    app.js
+    scoring.js
+```
+
+## How It Works
+
+The app does not need a dataset. It uses a rules-based scoring model.
+
+The user enters process details such as:
+
+- business area
+- task type
+- hours spent per week
+- hourly cost
+- people involved
+- weekly process volume
+- error frequency
+- process clarity
+- tool complexity
+- urgency
+
+The scoring engine estimates:
+
+- automation readiness
+- monthly savings
+- hours saved
+- ROI category
+- recommended solution
+- implementation timeline
+- delivery risks
+
+## Run Locally
+
+```bash
+node server.mjs
+```
+
+Then open:
+
+```text
+http://127.0.0.1:4173/
+```
+
+## Portfolio Angle
+
+This project shows:
+
+- business analytics thinking
+- automation discovery logic
+- dashboard-style UI design
+- ROI modelling
+- explainable recommendations
+- practical product thinking for real companies
+
+## Future Improvements
+
+- Add printable report export
+- Add process comparison mode
+- Add impact vs effort matrix
+- Add saved scenarios with local storage
+- Add CSV export
+- Add test coverage for scoring logic
+- Add a deployment workflow for GitHub Pages

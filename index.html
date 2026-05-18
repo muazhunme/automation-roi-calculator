@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Business Automation ROI Calculator for estimating automation readiness, savings, and implementation fit."
+    />
+    <title>Business Automation ROI Calculator</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Business automation audit</p>
+          <h1>Estimate whether a manual process is worth automating.</h1>
+          <p>
+            Enter one business workflow and get a readiness score, ROI estimate,
+            recommended automation type, risk flags, and a practical rollout timeline.
+          </p>
+        </div>
+        <div class="hero-panel" aria-label="Calculator summary">
+          <span>Privacy-first demo</span>
+          <strong>No login. No backend. No paid API.</strong>
+          <p>All calculations run in your browser using transparent scoring rules.</p>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <form class="audit-form" id="auditForm">
+          <div class="form-header">
+            <p class="eyebrow">Process details</p>
+            <h2>Automation intake</h2>
+          </div>
+
+          <label>
+            Business area
+            <select id="businessArea" name="businessArea">
+              <option value="finance">Finance</option>
+              <option value="sales">Sales</option>
+              <option value="hr">HR</option>
+              <option value="operations">Operations</option>
+              <option value="support">Customer support</option>
+              <option value="compliance">Compliance</option>
+            </select>
+          </label>
+
+          <label>
+            Task type
+            <select id="taskType" name="taskType">
+              <option value="invoice">Invoice processing</option>
+              <option value="crm">CRM updates</option>
+              <option value="reporting">Weekly reporting</option>
+              <option value="approval">Approval workflow</option>
+              <option value="contract">Contract review or renewal</option>
+              <option value="dataEntry">Data entry</option>
+              <option value="customerEmails">Customer emails</option>
+              <option value="complianceEvidence">Compliance evidence collection</option>
+            </select>
+          </label>
+
+          <div class="field-grid">
+            <label>
+              Hours per week
+              <input id="hoursPerWeek" name="hoursPerWeek" type="number" min="1" max="200" value="12" />
+            </label>
+
+            <label>
+              Hourly cost ($)
+              <input id="hourlyCost" name="hourlyCost" type="number" min="15" max="300" value="35" />
+            </label>
+          </div>
+
+          <div class="field-grid">
+            <label>
+              People involved
+              <input id="peopleInvolved" name="peopleInvolved" type="number" min="1" max="50" value="3" />
+            </label>
+
+            <label>
+              Weekly volume
+              <input id="weeklyVolume" name="weeklyVolume" type="number" min="1" max="5000" value="80" />
+            </label>
+          </div>
+
+          <label>
+            Error frequency
+            <select id="errorFrequency" name="errorFrequency">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </label>
+
+          <label>
+            Process clarity
+            <select id="processClarity" name="processClarity">
+              <option value="clear" selected>Clear and documented</option>
+              <option value="partial">Partially documented</option>
+              <option value="unclear">Unclear or changes often</option>
+            </select>
+          </label>
+
+          <label>
+            Current tools
+            <select id="toolComplexity" name="toolComplexity">
+              <option value="single">One main system</option>
+              <option value="few" selected>Two to three systems</option>
+              <option value="many">Many disconnected tools</option>
+            </select>
+          </label>
+
+          <label>
+            Urgency / pain level
+            <select id="urgency" name="urgency">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </label>
+
+          <div class="button-row">
+            <button type="submit">Calculate ROI</button>
+            <button type="button" class="secondary" id="resetButton">Reset</button>
+          </div>
+        </form>
+
+        <section class="results" aria-live="polite">
+          <div class="results-header">
+            <p class="eyebrow">Recommendation</p>
+            <h2 id="solutionTitle">Invoice automation + approval workflow</h2>
+          </div>
+
+          <div class="score-card">
+            <span>Automation readiness</span>
+            <strong id="scoreValue">86</strong>
+            <small id="scoreLabel">High priority</small>
+          </div>
+
+          <div class="metric-grid">
+            <div>
+              <span>Monthly saving</span>
+              <strong id="monthlySaving">$1,180</strong>
+            </div>
+            <div>
+              <span>Hours saved / month</span>
+              <strong id="hoursSaved">34</strong>
+            </div>
+            <div>
+              <span>ROI category</span>
+              <strong id="roiCategory">High</strong>
+            </div>
+            <div>
+              <span>Timeline</span>
+              <strong id="timeline">4-6 weeks</strong>
+            </div>
+          </div>
+
+          <div class="insight-block">
+            <h3>Business summary</h3>
+            <p id="summaryText"></p>
+          </div>
+
+          <div class="insight-block">
+            <h3>Risk flags</h3>
+            <ul id="riskList"></ul>
+          </div>
+        </section>
+      </section>
+
+      <section class="samples">
+        <div>
+          <p class="eyebrow">Test data</p>
+          <h2>Sample scenarios</h2>
+        </div>
+        <div class="sample-grid" id="sampleGrid"></div>
+      </section>
+    </main>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>
