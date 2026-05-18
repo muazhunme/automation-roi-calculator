@@ -17,6 +17,11 @@ This project models that early discovery step with transparent, client-side scor
 - Separate automation fit and business value scores
 - Estimated monthly cost savings
 - Estimated yearly savings
+- Fully burdened labour cost assumptions
+- Total cost of ownership assumptions
+- Error and rework savings
+- Opportunity value from reallocated time
+- Volume scaling forecast
 - Estimated hours saved per month
 - ROI category
 - Impact versus effort matrix

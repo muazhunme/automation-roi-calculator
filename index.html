@@ -95,6 +95,35 @@
 
           <div class="field-grid">
             <label>
+              Labour overhead (%)
+              <input id="overheadPercent" name="overheadPercent" type="number" min="0" max="100" value="30" />
+            </label>
+
+            <label>
+              Monthly automation TCO ($)
+              <input id="monthlyAutomationTco" name="monthlyAutomationTco" type="number" min="0" max="10000" value="350" />
+            </label>
+          </div>
+
+          <div class="field-grid">
+            <label>
+              Rework cost per error ($)
+              <input id="errorCost" name="errorCost" type="number" min="0" max="5000" value="45" />
+            </label>
+
+            <label>
+              Annual volume growth (%)
+              <input id="annualVolumeGrowth" name="annualVolumeGrowth" type="number" min="0" max="200" value="15" />
+            </label>
+          </div>
+
+          <label>
+            Opportunity value of freed time (%)
+            <input id="opportunityValuePercent" name="opportunityValuePercent" type="number" min="0" max="100" value="25" />
+          </label>
+
+          <div class="field-grid">
+            <label>
               People involved
               <input id="peopleInvolved" name="peopleInvolved" type="number" min="1" max="50" value="3" />
             </label>
@@ -241,8 +270,36 @@
               <strong id="manualCost">$1,819</strong>
             </div>
             <div>
+              <span>Burdened hourly cost</span>
+              <strong id="burdenedHourlyCost">$46</strong>
+            </div>
+            <div>
+              <span>Labour saving</span>
+              <strong id="laborSavings">$1,546</strong>
+            </div>
+            <div>
+              <span>Error/rework saving</span>
+              <strong id="errorSavings">$98</strong>
+            </div>
+            <div>
+              <span>Opportunity value</span>
+              <strong id="opportunityValue">$387</strong>
+            </div>
+            <div>
+              <span>Monthly TCO</span>
+              <strong id="monthlyTco">$350</strong>
+            </div>
+            <div>
+              <span>Gross monthly benefit</span>
+              <strong id="grossBenefit">$2,031</strong>
+            </div>
+            <div>
               <span>Estimated yearly saving</span>
               <strong id="yearlySaving">$18,552</strong>
+            </div>
+            <div>
+              <span>Scaled monthly benefit</span>
+              <strong id="scaledBenefit">$1,934</strong>
             </div>
             <div>
               <span>Estimated build-cost band</span>
@@ -359,6 +416,22 @@
           <article>
             <h2>Confidence</h2>
             <p>Explains how reliable the estimate is based on process clarity, system complexity, judgement, and volume.</p>
+          </article>
+          <article>
+            <h2>Fully burdened labour</h2>
+            <p>Manual cost uses hourly cost plus overhead, so benefits, equipment, payroll costs, and hidden operating load are reflected.</p>
+          </article>
+          <article>
+            <h2>Total cost of ownership</h2>
+            <p>Net savings subtract estimated monthly automation TCO, such as licensing, maintenance, support, and platform costs.</p>
+          </article>
+          <article>
+            <h2>Error and rework savings</h2>
+            <p>The calculator estimates avoided error cost from process volume, error frequency, rework cost, and automation coverage.</p>
+          </article>
+          <article>
+            <h2>Scaling and opportunity value</h2>
+            <p>It models one-year volume growth and adds a value estimate for reallocating saved human time to higher-value work.</p>
           </article>
         </div>
 

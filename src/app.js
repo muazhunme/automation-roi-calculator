@@ -13,6 +13,11 @@ const fields = [
   "taskType",
   "hoursPerWeek",
   "hourlyCost",
+  "overheadPercent",
+  "monthlyAutomationTco",
+  "errorCost",
+  "opportunityValuePercent",
+  "annualVolumeGrowth",
   "peopleInvolved",
   "weeklyVolume",
   "errorFrequency",
@@ -31,6 +36,11 @@ function readForm() {
     taskType: formData.get("taskType"),
     hoursPerWeek: Number(formData.get("hoursPerWeek")),
     hourlyCost: Number(formData.get("hourlyCost")),
+    overheadPercent: Number(formData.get("overheadPercent")),
+    monthlyAutomationTco: Number(formData.get("monthlyAutomationTco")),
+    errorCost: Number(formData.get("errorCost")),
+    opportunityValuePercent: Number(formData.get("opportunityValuePercent")),
+    annualVolumeGrowth: Number(formData.get("annualVolumeGrowth")),
     peopleInvolved: Number(formData.get("peopleInvolved")),
     weeklyVolume: Number(formData.get("weeklyVolume")),
     errorFrequency: formData.get("errorFrequency"),
@@ -89,6 +99,13 @@ function renderResults(result) {
   ).textContent = `${result.confidence.score}/100 based on clarity, judgement, and tool complexity.`;
   document.querySelector("#monthlySaving").textContent = money(result.monthlySaving);
   document.querySelector("#manualCost").textContent = money(result.monthlyCost);
+  document.querySelector("#burdenedHourlyCost").textContent = money(result.burdenedHourlyCost);
+  document.querySelector("#laborSavings").textContent = money(result.laborSavings);
+  document.querySelector("#errorSavings").textContent = money(result.errorSavings);
+  document.querySelector("#opportunityValue").textContent = money(result.opportunityValue);
+  document.querySelector("#monthlyTco").textContent = money(result.monthlyAutomationTco);
+  document.querySelector("#grossBenefit").textContent = money(result.grossMonthlyBenefit);
+  document.querySelector("#scaledBenefit").textContent = money(result.scaledMonthlyBenefit);
   document.querySelector("#yearlySaving").textContent = money(result.yearlySaving);
   document.querySelector("#buildCost").textContent = money(result.estimatedBuildCost);
   document.querySelector("#complexityLabel").textContent = result.complexity;

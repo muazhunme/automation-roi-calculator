@@ -99,6 +99,11 @@ export const sampleScenarios = [
     taskType: "invoice",
     hoursPerWeek: 12,
     hourlyCost: 35,
+    overheadPercent: 30,
+    monthlyAutomationTco: 350,
+    errorCost: 45,
+    opportunityValuePercent: 25,
+    annualVolumeGrowth: 15,
     peopleInvolved: 3,
     weeklyVolume: 80,
     industry: "accounting",
@@ -114,6 +119,11 @@ export const sampleScenarios = [
     taskType: "crm",
     hoursPerWeek: 9,
     hourlyCost: 32,
+    overheadPercent: 25,
+    monthlyAutomationTco: 250,
+    errorCost: 35,
+    opportunityValuePercent: 20,
+    annualVolumeGrowth: 20,
     peopleInvolved: 5,
     weeklyVolume: 140,
     industry: "saas",
@@ -129,6 +139,11 @@ export const sampleScenarios = [
     taskType: "complianceEvidence",
     hoursPerWeek: 18,
     hourlyCost: 48,
+    overheadPercent: 35,
+    monthlyAutomationTco: 650,
+    errorCost: 120,
+    opportunityValuePercent: 30,
+    annualVolumeGrowth: 10,
     peopleInvolved: 4,
     weeklyVolume: 60,
     industry: "healthcare",
@@ -171,6 +186,12 @@ function classifyRoi(monthlySaving) {
   if (monthlySaving >= 1200) return "High";
   if (monthlySaving >= 500) return "Medium";
   return "Low";
+}
+
+function errorRate(errorFrequency) {
+  if (errorFrequency === "high") return 0.08;
+  if (errorFrequency === "medium") return 0.035;
+  return 0.012;
 }
 
 function industryBoost(input) {
@@ -240,20 +261,20 @@ function estimateBuildCost(complexity) {
   return 2500;
 }
 
-function buildPayback(monthlySaving, buildCost) {
-  if (monthlySaving < 100) {
+function buildPayback(netMonthlyBenefit, buildCost) {
+  if (netMonthlyBenefit < 100) {
     return {
       months: null,
       label: "Not meaningful yet",
-      explanation: "The estimated monthly saving is too low to justify a build-cost payback estimate.",
+      explanation: "The estimated net monthly benefit is too low to justify a build-cost payback estimate.",
     };
   }
 
-  const months = buildCost / monthlySaving;
+  const months = buildCost / netMonthlyBenefit;
   return {
     months: Number(months.toFixed(1)),
     label: `${months.toFixed(1)} months`,
-    explanation: `Estimated build-cost band is $${buildCost.toLocaleString()}, so payback is about ${months.toFixed(1)} months at the current saving estimate.`,
+    explanation: `Estimated build-cost band is $${buildCost.toLocaleString()}, so payback is about ${months.toFixed(1)} months using net monthly benefit after TCO.`,
   };
 }
 
@@ -305,6 +326,8 @@ function buildReasonCodes(input, monthlySaving, automationFitScore, businessValu
   if (input.toolComplexity === "many") reasons.push("Integration risk: many disconnected systems are involved.");
   if (input.weeklyVolume < 20) reasons.push("Low volume: automation may not pay back quickly.");
   if (input.errorFrequency === "high") reasons.push("Quality driver: frequent errors increase improvement value.");
+  if (input.overheadPercent >= 25) reasons.push("Burdened labour: overhead makes manual work more expensive than base hourly cost.");
+  if (input.annualVolumeGrowth >= 15) reasons.push("Scaling upside: growing volume increases the long-term automation case.");
 
   return reasons;
 }
@@ -461,11 +484,11 @@ function chooseAutomationStyle(input) {
   return "Workflow automation";
 }
 
-function buildSensitivity(monthlySaving, readinessFactor) {
+function buildSensitivity(monthlySaving, readinessFactor, growthMonthlyBenefit) {
   return [
     { label: "Conservative", saving: Math.round(monthlySaving * 0.7), coverage: "Lower adoption" },
     { label: "Expected", saving: monthlySaving, coverage: `${Math.round(readinessFactor * 100)}% coverage` },
-    { label: "Optimistic", saving: Math.round(monthlySaving * 1.25), coverage: "Higher volume" },
+    { label: "Scaled volume", saving: Math.round(growthMonthlyBenefit), coverage: "After one year of volume growth" },
   ];
 }
 
@@ -536,7 +559,8 @@ function buildRisks(input) {
 
 export function calculateAutomationCase(input) {
   const profile = taskProfiles[input.taskType];
-  const weeklyCost = input.hoursPerWeek * input.hourlyCost;
+  const burdenedHourlyCost = input.hourlyCost * (1 + input.overheadPercent / 100);
+  const weeklyCost = input.hoursPerWeek * burdenedHourlyCost;
   const monthlyCost = weeklyCost * 4.33;
   const peopleScore = clamp(input.peopleInvolved * 2, 2, 10);
   const industryScore = industryBoost(input);
@@ -562,7 +586,8 @@ export function calculateAutomationCase(input) {
         scoreVolume(input.weeklyVolume) +
         scoreHours(input.hoursPerWeek) +
         peopleScore +
-        Math.min(monthlyCost / 55, 24),
+        Math.min(monthlyCost / 55, 24) +
+        Math.min(input.annualVolumeGrowth / 2, 10),
       0,
       100
     )
@@ -584,8 +609,16 @@ export function calculateAutomationCase(input) {
   const readinessScore = Math.round(clamp(rawScore, 0, 100));
   const readinessFactor = clamp(readinessScore / 100, 0.25, 0.85);
   const estimatedHoursSaved = Math.round(input.hoursPerWeek * 4.33 * readinessFactor);
-  const monthlySaving = Math.round(monthlyCost * readinessFactor);
+  const laborSavings = Math.round(monthlyCost * readinessFactor);
+  const monthlyErrorCount = input.weeklyVolume * 4.33 * errorRate(input.errorFrequency);
+  const errorSavings = Math.round(monthlyErrorCount * input.errorCost * readinessFactor);
+  const opportunityValue = Math.round(laborSavings * (input.opportunityValuePercent / 100));
+  const grossMonthlyBenefit = laborSavings + errorSavings + opportunityValue;
+  const monthlySaving = Math.round(grossMonthlyBenefit - input.monthlyAutomationTco);
   const yearlySaving = monthlySaving * 12;
+  const scaledMonthlyBenefit = Math.round(
+    monthlySaving * (1 + input.annualVolumeGrowth / 100)
+  );
   const toolEffort = input.toolComplexity === "many" ? 25 : input.toolComplexity === "few" ? 10 : 3;
   const clarityEffort =
     input.processClarity === "unclear" ? 25 : input.processClarity === "partial" ? 8 : -10;
@@ -625,6 +658,13 @@ export function calculateAutomationCase(input) {
     complexity,
     estimatedBuildCost: buildCost,
     payback,
+    burdenedHourlyCost: Math.round(burdenedHourlyCost),
+    laborSavings,
+    errorSavings,
+    opportunityValue,
+    grossMonthlyBenefit,
+    monthlyAutomationTco: input.monthlyAutomationTco,
+    scaledMonthlyBenefit,
     monthlyCost: Math.round(monthlyCost),
     monthlySaving,
     yearlySaving,
@@ -639,7 +679,7 @@ export function calculateAutomationCase(input) {
     riskDetails: buildRisksWithSeverity(input),
     workflow: buildWorkflow(input.taskType),
     opportunityBacklog: buildOpportunityBacklog(input, decision, firstFeature),
-    sensitivity: buildSensitivity(monthlySaving, readinessFactor),
+    sensitivity: buildSensitivity(monthlySaving, readinessFactor, scaledMonthlyBenefit),
     risks: buildRisks(input),
     summary: recommendation.summary,
   };
