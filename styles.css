@@ -352,6 +352,16 @@ button.secondary:hover {
   padding-left: 18px;
 }
 
+.report-watermark {
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding-top: 16px;
+  text-transform: uppercase;
+}
+
 .samples {
   padding-top: 30px;
 }
@@ -450,6 +460,13 @@ button.secondary:hover {
   .results {
     border: 0;
     padding: 0;
+  }
+
+  .report-watermark {
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    right: 0;
   }
 
   .score-card,
