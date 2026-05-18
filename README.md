@@ -93,6 +93,24 @@ Then open:
 http://127.0.0.1:4173/
 ```
 
+## Suggested GitHub Repository
+
+```text
+muazhunme/automation-roi-calculator
+```
+
+Suggested repository description:
+
+```text
+A business automation audit tool that estimates ROI, readiness, savings, risks, and best-fit automation options for manual workflows.
+```
+
+Suggested topics:
+
+```text
+automation, roi-calculator, business-analytics, rpa, crm, javascript, portfolio-project
+```
+
 ## Portfolio Angle
 
 This project shows:
