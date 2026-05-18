@@ -79,6 +79,8 @@ select {
 
 .hero-panel span,
 .metric-grid span,
+.cost-grid span,
+.score-breakdown span,
 .score-card span,
 .sample-card span,
 .eyebrow {
@@ -202,13 +204,19 @@ button.secondary:hover {
   font-weight: 900;
 }
 
-.metric-grid {
+.metric-grid,
+.cost-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 12px;
 }
 
-.metric-grid div {
+.cost-grid {
+  grid-template-columns: 1fr 1fr;
+}
+
+.metric-grid div,
+.cost-grid div {
   min-height: 96px;
   display: grid;
   align-content: center;
@@ -219,9 +227,108 @@ button.secondary:hover {
   background: #fbfcfa;
 }
 
-.metric-grid strong {
+.metric-grid strong,
+.cost-grid strong {
   font-size: 1.35rem;
   color: var(--ink);
+}
+
+.score-breakdown {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.score-breakdown div,
+.matrix-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfa;
+  padding: 14px;
+}
+
+.score-breakdown strong {
+  display: block;
+  margin-top: 8px;
+  font-size: 1.8rem;
+  color: var(--accent-dark);
+}
+
+.score-breakdown p,
+.matrix-card p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.matrix-card {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(260px, 1.1fr);
+  gap: 18px;
+  align-items: center;
+}
+
+.matrix-card h3 {
+  margin: 0;
+}
+
+.matrix {
+  position: relative;
+  min-height: 230px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, transparent calc(50% - 1px), #cbd5ce calc(50% - 1px), #cbd5ce calc(50% + 1px), transparent calc(50% + 1px)),
+    linear-gradient(0deg, transparent calc(50% - 1px), #cbd5ce calc(50% - 1px), #cbd5ce calc(50% + 1px), transparent calc(50% + 1px)),
+    linear-gradient(135deg, #e7f5f2, #fff8e7);
+  overflow: hidden;
+}
+
+.matrix-point {
+  --x: 50%;
+  --y: 50%;
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: 18px;
+  height: 18px;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 6px 18px rgba(23, 32, 27, 0.22);
+  transform: translate(-50%, -50%);
+}
+
+.matrix-label {
+  position: absolute;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.matrix-label.top {
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.matrix-label.bottom {
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.matrix-label.left {
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.matrix-label.right {
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .insight-block {
@@ -290,8 +397,14 @@ button.secondary:hover {
   }
 
   .metric-grid,
+  .cost-grid,
+  .score-breakdown,
   .sample-grid {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .matrix-card {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -307,7 +420,43 @@ button.secondary:hover {
 
   .field-grid,
   .metric-grid,
+  .cost-grid,
+  .score-breakdown,
   .sample-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media print {
+  body {
+    background: #ffffff;
+  }
+
+  .hero,
+  .audit-form,
+  .samples {
+    display: none;
+  }
+
+  .app-shell {
+    width: 100%;
+    padding: 0;
+  }
+
+  .workspace {
+    display: block;
+  }
+
+  .results {
+    border: 0;
+    padding: 0;
+  }
+
+  .score-card,
+  .metric-grid div,
+  .cost-grid div,
+  .score-breakdown div,
+  .matrix-card {
+    break-inside: avoid;
   }
 }

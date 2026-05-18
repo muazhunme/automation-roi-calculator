@@ -14,12 +14,18 @@ This project models that early discovery step with transparent, client-side scor
 
 - Automation intake form
 - Readiness score from 0 to 100
+- Separate automation fit and business value scores
 - Estimated monthly cost savings
+- Estimated yearly savings
 - Estimated hours saved per month
 - ROI category
+- Impact versus effort matrix
+- Confidence score
 - Recommended automation type
 - Implementation timeline
 - Risk flags
+- Suggested implementation roadmap
+- Printable assessment report
 - Sample business scenarios
 - No backend, login, paid API, or database required
 
@@ -70,15 +76,22 @@ The user enters process details such as:
 - process clarity
 - tool complexity
 - urgency
+- human judgement required
 
 The scoring engine estimates:
 
 - automation readiness
+- automation fit
+- business value
 - monthly savings
+- yearly savings
 - hours saved
 - ROI category
 - recommended solution
 - implementation timeline
+- impact versus effort category
+- confidence level
+- suggested roadmap
 - delivery risks
 
 ## Run Locally

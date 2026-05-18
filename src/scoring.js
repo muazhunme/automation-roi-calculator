@@ -76,6 +76,12 @@ const toolWeights = {
   many: 10,
 };
 
+const judgementWeights = {
+  low: 12,
+  medium: 3,
+  high: -12,
+};
+
 export const sampleScenarios = [
   {
     name: "Invoice processing",
@@ -88,6 +94,7 @@ export const sampleScenarios = [
     errorFrequency: "medium",
     processClarity: "clear",
     toolComplexity: "few",
+    judgementLevel: "low",
     urgency: "high",
   },
   {
@@ -101,6 +108,7 @@ export const sampleScenarios = [
     errorFrequency: "low",
     processClarity: "partial",
     toolComplexity: "few",
+    judgementLevel: "medium",
     urgency: "medium",
   },
   {
@@ -114,6 +122,7 @@ export const sampleScenarios = [
     errorFrequency: "high",
     processClarity: "partial",
     toolComplexity: "many",
+    judgementLevel: "medium",
     urgency: "high",
   },
 ];
@@ -137,6 +146,7 @@ function scoreHours(hours) {
 }
 
 function classifyScore(score) {
+  if (score >= 86) return "Strong automation priority";
   if (score >= 80) return "High priority";
   if (score >= 62) return "Strong candidate";
   if (score >= 45) return "Moderate candidate";
@@ -150,7 +160,78 @@ function classifyRoi(monthlySaving) {
   return "Low";
 }
 
-function buildRecommendation(score, profile) {
+function classifyConfidence(input) {
+  let confidence = 86;
+
+  if (input.processClarity === "partial") confidence -= 14;
+  if (input.processClarity === "unclear") confidence -= 28;
+  if (input.toolComplexity === "many") confidence -= 12;
+  if (input.judgementLevel === "high") confidence -= 16;
+  if (input.weeklyVolume < 10) confidence -= 10;
+
+  confidence = clamp(confidence, 20, 95);
+
+  if (confidence >= 78) return { score: confidence, label: "High" };
+  if (confidence >= 55) return { score: confidence, label: "Medium" };
+  return { score: confidence, label: "Low" };
+}
+
+function classifyMatrix(impact, effort) {
+  if (impact >= 65 && effort < 55) {
+    return {
+      quadrant: "Quick win",
+      explanation: "High value with manageable delivery effort.",
+    };
+  }
+
+  if (impact >= 65 && effort >= 55) {
+    return {
+      quadrant: "Strategic project",
+      explanation: "Worth considering, but it needs planning and stakeholder support.",
+    };
+  }
+
+  if (impact < 65 && effort < 55) {
+    return {
+      quadrant: "Optional improvement",
+      explanation: "Could help, but it may not be the first automation priority.",
+    };
+  }
+
+  return {
+    quadrant: "Avoid for now",
+    explanation: "Low value compared with the delivery effort.",
+  };
+}
+
+function buildRoadmap(score) {
+  if (score < 45) {
+    return [
+      "Document the process steps and decision points.",
+      "Standardise inputs, files, and handoffs.",
+      "Measure volume and errors for two to four weeks.",
+      "Reassess automation once the workflow is stable.",
+    ];
+  }
+
+  if (score < 62) {
+    return [
+      "Map the current workflow and remove avoidable manual steps.",
+      "Clean up data quality and ownership issues.",
+      "Confirm expected savings with stakeholders.",
+      "Build a small prototype only after the process is clearer.",
+    ];
+  }
+
+  return [
+    "Run discovery and confirm automation scope.",
+    "Map exceptions, data sources, and approval rules.",
+    "Build a prototype with sample process data.",
+    "Test exceptions, launch, and monitor performance.",
+  ];
+}
+
+function buildRecommendation(score, profile, monthlySaving, estimatedHoursSaved) {
   if (score < 45) {
     return {
       solution: "Do not automate yet",
@@ -167,7 +248,7 @@ function buildRecommendation(score, profile) {
 
   return {
     solution: profile.solution,
-    summary: `This is a ${profile.keywords} process. Based on the workload, error level, tool complexity, and process clarity, ${profile.solution.toLowerCase()} is the best-fit recommendation. The estimate suggests about {hours} hours saved per month and roughly {saving} in monthly capacity savings.`,
+    summary: `This is a ${profile.keywords} process. Based on the workload, error level, tool complexity, and process clarity, ${profile.solution.toLowerCase()} is the best-fit recommendation. The estimate suggests about ${estimatedHoursSaved.toLocaleString()} hours saved per month and roughly $${monthlySaving.toLocaleString()} in monthly capacity savings.`,
   };
 }
 
@@ -180,6 +261,10 @@ function buildRisks(input) {
 
   if (input.toolComplexity === "many") {
     risks.push("Disconnected tools may require integration planning before build work.");
+  }
+
+  if (input.judgementLevel === "high") {
+    risks.push("High human judgement means full automation may be risky; decision support may be safer.");
   }
 
   if (input.weeklyVolume < 20 && input.hoursPerWeek < 5) {
@@ -203,6 +288,32 @@ export function calculateAutomationCase(input) {
   const monthlyCost = weeklyCost * 4.33;
   const peopleScore = clamp(input.peopleInvolved * 2, 2, 10);
 
+  const automationFitScore = Math.round(
+    clamp(
+      profile.fit * 34 +
+        clarityWeights[input.processClarity] +
+        judgementWeights[input.judgementLevel] +
+        toolWeights[input.toolComplexity] +
+        scoreVolume(input.weeklyVolume) +
+        levelWeights[input.errorFrequency],
+      0,
+      100
+    )
+  );
+
+  const businessValueScore = Math.round(
+    clamp(
+      areaWeights[input.businessArea] +
+        levelWeights[input.urgency] +
+        scoreVolume(input.weeklyVolume) +
+        scoreHours(input.hoursPerWeek) +
+        peopleScore +
+        Math.min(monthlyCost / 55, 24),
+      0,
+      100
+    )
+  );
+
   const rawScore =
     profile.fit * 24 +
     areaWeights[input.businessArea] +
@@ -210,6 +321,7 @@ export function calculateAutomationCase(input) {
     levelWeights[input.urgency] +
     clarityWeights[input.processClarity] +
     toolWeights[input.toolComplexity] +
+    judgementWeights[input.judgementLevel] +
     scoreVolume(input.weeklyVolume) +
     scoreHours(input.hoursPerWeek) +
     peopleScore;
@@ -218,19 +330,41 @@ export function calculateAutomationCase(input) {
   const readinessFactor = clamp(readinessScore / 100, 0.25, 0.85);
   const estimatedHoursSaved = Math.round(input.hoursPerWeek * 4.33 * readinessFactor);
   const monthlySaving = Math.round(monthlyCost * readinessFactor);
-  const recommendation = buildRecommendation(readinessScore, profile);
+  const yearlySaving = monthlySaving * 12;
+  const toolEffort = input.toolComplexity === "many" ? 25 : input.toolComplexity === "few" ? 10 : 3;
+  const clarityEffort =
+    input.processClarity === "unclear" ? 25 : input.processClarity === "partial" ? 8 : -10;
+  const judgementEffort =
+    input.judgementLevel === "high" ? 30 : input.judgementLevel === "medium" ? 10 : -10;
+  const effortScore = Math.round(
+    clamp(35 + toolEffort + clarityEffort + judgementEffort - profile.fit * 15, 0, 100)
+  );
+  const confidence = classifyConfidence(input);
+  const matrix = classifyMatrix(businessValueScore, effortScore);
+  const recommendation = buildRecommendation(
+    readinessScore,
+    profile,
+    monthlySaving,
+    estimatedHoursSaved
+  );
 
   return {
     readinessScore,
+    automationFitScore,
+    businessValueScore,
+    effortScore,
+    confidence,
+    matrix,
     scoreLabel: classifyScore(readinessScore),
     solution: recommendation.solution,
+    monthlyCost: Math.round(monthlyCost),
     monthlySaving,
+    yearlySaving,
     estimatedHoursSaved,
     roiCategory: classifyRoi(monthlySaving),
     timeline: profile.timeline,
+    roadmap: buildRoadmap(readinessScore),
     risks: buildRisks(input),
-    summary: recommendation.summary
-      .replace("{hours}", estimatedHoursSaved.toLocaleString())
-      .replace("{saving}", `$${monthlySaving.toLocaleString()}`),
+    summary: recommendation.summary,
   };
 }

@@ -113,6 +113,15 @@
           </label>
 
           <label>
+            Human judgement required
+            <select id="judgementLevel" name="judgementLevel">
+              <option value="low" selected>Low - mostly rules-based</option>
+              <option value="medium">Medium - some exceptions</option>
+              <option value="high">High - judgement-heavy</option>
+            </select>
+          </label>
+
+          <label>
             Urgency / pain level
             <select id="urgency" name="urgency">
               <option value="low">Low</option>
@@ -123,6 +132,7 @@
 
           <div class="button-row">
             <button type="submit">Calculate ROI</button>
+            <button type="button" class="secondary" id="printButton">Print report</button>
             <button type="button" class="secondary" id="resetButton">Reset</button>
           </div>
         </form>
@@ -158,9 +168,57 @@
             </div>
           </div>
 
+          <div class="score-breakdown">
+            <div>
+              <span>Automation fit</span>
+              <strong id="fitScore">82</strong>
+              <p>How rule-based, stable, and repeatable the process is.</p>
+            </div>
+            <div>
+              <span>Business value</span>
+              <strong id="valueScore">76</strong>
+              <p>How much the process is worth improving based on cost, volume, and urgency.</p>
+            </div>
+            <div>
+              <span>Confidence</span>
+              <strong id="confidenceLabel">High</strong>
+              <p id="confidenceScore">86/100 based on clarity, data quality, and complexity.</p>
+            </div>
+          </div>
+
+          <div class="matrix-card">
+            <div>
+              <h3>Impact vs effort</h3>
+              <p id="matrixText">Quick win - high value with manageable delivery effort.</p>
+            </div>
+            <div class="matrix" aria-label="Impact versus effort matrix">
+              <span class="matrix-label top">High impact</span>
+              <span class="matrix-label bottom">Low impact</span>
+              <span class="matrix-label left">Low effort</span>
+              <span class="matrix-label right">High effort</span>
+              <span class="matrix-point" id="matrixPoint"></span>
+            </div>
+          </div>
+
+          <div class="cost-grid">
+            <div>
+              <span>Current monthly manual cost</span>
+              <strong id="manualCost">$1,819</strong>
+            </div>
+            <div>
+              <span>Estimated yearly saving</span>
+              <strong id="yearlySaving">$18,552</strong>
+            </div>
+          </div>
+
           <div class="insight-block">
             <h3>Business summary</h3>
             <p id="summaryText"></p>
+          </div>
+
+          <div class="insight-block">
+            <h3>Suggested roadmap</h3>
+            <ol id="roadmapList"></ol>
           </div>
 
           <div class="insight-block">

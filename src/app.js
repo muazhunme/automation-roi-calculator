@@ -2,6 +2,7 @@ import { calculateAutomationCase, sampleScenarios } from "./scoring.js";
 
 const form = document.querySelector("#auditForm");
 const resetButton = document.querySelector("#resetButton");
+const printButton = document.querySelector("#printButton");
 const sampleGrid = document.querySelector("#sampleGrid");
 
 const fields = [
@@ -14,6 +15,7 @@ const fields = [
   "errorFrequency",
   "processClarity",
   "toolComplexity",
+  "judgementLevel",
   "urgency",
 ];
 
@@ -30,6 +32,7 @@ function readForm() {
     errorFrequency: formData.get("errorFrequency"),
     processClarity: formData.get("processClarity"),
     toolComplexity: formData.get("toolComplexity"),
+    judgementLevel: formData.get("judgementLevel"),
     urgency: formData.get("urgency"),
   };
 }
@@ -52,17 +55,41 @@ function renderResults(result) {
   document.querySelector("#solutionTitle").textContent = result.solution;
   document.querySelector("#scoreValue").textContent = result.readinessScore;
   document.querySelector("#scoreLabel").textContent = result.scoreLabel;
+  document.querySelector("#fitScore").textContent = result.automationFitScore;
+  document.querySelector("#valueScore").textContent = result.businessValueScore;
+  document.querySelector("#confidenceLabel").textContent = result.confidence.label;
+  document.querySelector(
+    "#confidenceScore"
+  ).textContent = `${result.confidence.score}/100 based on clarity, judgement, and tool complexity.`;
   document.querySelector("#monthlySaving").textContent = money(result.monthlySaving);
+  document.querySelector("#manualCost").textContent = money(result.monthlyCost);
+  document.querySelector("#yearlySaving").textContent = money(result.yearlySaving);
   document.querySelector("#hoursSaved").textContent = result.estimatedHoursSaved;
   document.querySelector("#roiCategory").textContent = result.roiCategory;
   document.querySelector("#timeline").textContent = result.timeline;
   document.querySelector("#summaryText").textContent = result.summary;
+  document.querySelector(
+    "#matrixText"
+  ).textContent = `${result.matrix.quadrant} - ${result.matrix.explanation}`;
+
+  const matrixPoint = document.querySelector("#matrixPoint");
+  matrixPoint.style.setProperty("--x", `${result.effortScore}%`);
+  matrixPoint.style.setProperty("--y", `${100 - result.businessValueScore}%`);
 
   const riskList = document.querySelector("#riskList");
   riskList.replaceChildren(
     ...result.risks.map((risk) => {
       const item = document.createElement("li");
       item.textContent = risk;
+      return item;
+    })
+  );
+
+  const roadmapList = document.querySelector("#roadmapList");
+  roadmapList.replaceChildren(
+    ...result.roadmap.map((step) => {
+      const item = document.createElement("li");
+      item.textContent = step;
       return item;
     })
   );
@@ -81,7 +108,7 @@ function renderSamples() {
       button.innerHTML = `
         <span>${scenario.businessArea}</span>
         <strong>${scenario.name}</strong>
-        <small>${scenario.hoursPerWeek} hrs/week · ${scenario.weeklyVolume} items/week</small>
+        <small>${scenario.hoursPerWeek} hrs/week &middot; ${scenario.weeklyVolume} items/week</small>
       `;
       button.addEventListener("click", () => {
         writeForm(scenario);
@@ -100,6 +127,11 @@ form.addEventListener("submit", (event) => {
 resetButton.addEventListener("click", () => {
   writeForm(sampleScenarios[0]);
   calculateAndRender();
+});
+
+printButton.addEventListener("click", () => {
+  calculateAndRender();
+  window.print();
 });
 
 renderSamples();
