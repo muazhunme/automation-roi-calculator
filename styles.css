@@ -678,21 +678,24 @@ button.secondary:hover {
 
   .results {
     border: 0;
-    padding: 0;
+    gap: 14px;
+    padding: 0 0 18px;
   }
 
   .report-watermark {
-    bottom: 0;
-    left: 0;
-    position: fixed;
-    right: 0;
+    margin-top: 18px;
+    padding-top: 10px;
+    position: static;
   }
 
   .score-card,
   .metric-grid div,
   .cost-grid div,
   .score-breakdown div,
-  .matrix-card {
+  .matrix-card,
+  .insight-block,
+  .advisor-card {
     break-inside: avoid;
+    page-break-inside: avoid;
   }
 }
