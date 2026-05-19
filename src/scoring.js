@@ -92,9 +92,23 @@ const industryWeights = {
   realEstate: { sales: 6, compliance: 5, finance: 3 },
 };
 
+const cityCostIndexes = {
+  sydney: { label: "Sydney", index: 1.1 },
+  melbourne: { label: "Melbourne", index: 1.07 },
+  brisbane: { label: "Brisbane", index: 1.03 },
+  perth: { label: "Perth", index: 1.05 },
+  adelaide: { label: "Adelaide", index: 0.98 },
+  canberra: { label: "Canberra", index: 1.08 },
+  hobart: { label: "Hobart", index: 0.96 },
+  darwin: { label: "Darwin", index: 1.04 },
+  goldCoast: { label: "Gold Coast", index: 1.01 },
+  newcastle: { label: "Newcastle", index: 0.99 },
+};
+
 export const sampleScenarios = [
   {
     name: "Invoice processing",
+    city: "sydney",
     businessArea: "finance",
     taskType: "invoice",
     hoursPerWeek: 12,
@@ -115,6 +129,7 @@ export const sampleScenarios = [
   },
   {
     name: "Sales CRM updates",
+    city: "melbourne",
     businessArea: "sales",
     taskType: "crm",
     hoursPerWeek: 9,
@@ -135,6 +150,7 @@ export const sampleScenarios = [
   },
   {
     name: "Compliance evidence",
+    city: "brisbane",
     businessArea: "compliance",
     taskType: "complianceEvidence",
     hoursPerWeek: 18,
@@ -197,6 +213,10 @@ function errorRate(errorFrequency) {
 function industryBoost(input) {
   const profile = industryWeights[input.industry] || {};
   return profile[input.businessArea] || 0;
+}
+
+function cityProfile(city) {
+  return cityCostIndexes[city] || cityCostIndexes.sydney;
 }
 
 function classifyConfidence(input) {
@@ -598,9 +618,32 @@ function buildRisks(input) {
   return risks;
 }
 
+function buildAssumptions(input, city, readinessFactor, errorRateValue) {
+  return [
+    `Region: Australia, city: ${city.label}, currency: AUD.`,
+    `City cost index: ${city.index.toFixed(2)} applied to base hourly cost before labour overhead.`,
+    `Burdened hourly cost = hourly cost x city index x (1 + overhead %).`,
+    `Monthly manual cost = hours per week x burdened hourly cost x 4.33 weeks.`,
+    `Automation coverage is estimated at ${Math.round(readinessFactor * 100)}% from readiness score, capped to avoid unrealistic 100% savings.`,
+    `Error saving uses an estimated ${(errorRateValue * 100).toFixed(1)}% error rate based on selected error frequency.`,
+    `Net monthly saving subtracts monthly automation TCO from labour, error, and opportunity benefits.`,
+  ];
+}
+
+function buildStakeholderReview() {
+  return [
+    "Process owner should confirm the workflow, exceptions, and time estimate.",
+    "Finance or payroll should confirm hourly cost, overhead, and opportunity value.",
+    "IT or system owner should confirm tool access, integration effort, security, and monthly TCO.",
+    "Operations leader should confirm the target KPI, rollout risk, and acceptable payback.",
+    "Use this report for discovery first; do not rely on the numbers for spending approval until reviewed.",
+  ];
+}
+
 export function calculateAutomationCase(input) {
   const profile = taskProfiles[input.taskType];
-  const burdenedHourlyCost = input.hourlyCost * (1 + input.overheadPercent / 100);
+  const city = cityProfile(input.city);
+  const burdenedHourlyCost = input.hourlyCost * city.index * (1 + input.overheadPercent / 100);
   const weeklyCost = input.hoursPerWeek * burdenedHourlyCost;
   const monthlyCost = weeklyCost * 4.33;
   const peopleScore = clamp(input.peopleInvolved * 2, 2, 10);
@@ -651,7 +694,8 @@ export function calculateAutomationCase(input) {
   const readinessFactor = clamp(readinessScore / 100, 0.25, 0.85);
   const estimatedHoursSaved = Math.round(input.hoursPerWeek * 4.33 * readinessFactor);
   const laborSavings = Math.round(monthlyCost * readinessFactor);
-  const monthlyErrorCount = input.weeklyVolume * 4.33 * errorRate(input.errorFrequency);
+  const errorRateValue = errorRate(input.errorFrequency);
+  const monthlyErrorCount = input.weeklyVolume * 4.33 * errorRateValue;
   const errorSavings = Math.round(monthlyErrorCount * input.errorCost * readinessFactor);
   const opportunityValue = Math.round(laborSavings * (input.opportunityValuePercent / 100));
   const grossMonthlyBenefit = laborSavings + errorSavings + opportunityValue;
@@ -689,6 +733,9 @@ export function calculateAutomationCase(input) {
 
   return {
     readinessScore,
+    city: input.city,
+    cityLabel: city.label,
+    currency: "AUD",
     automationFitScore,
     businessValueScore,
     effortScore,
@@ -726,6 +773,8 @@ export function calculateAutomationCase(input) {
     opportunityBacklog: buildOpportunityBacklog(input, decision, firstFeature),
     sensitivity: buildSensitivity(monthlySaving, readinessFactor, scaledMonthlyBenefit),
     risks: buildRisks(input),
+    assumptions: buildAssumptions(input, city, readinessFactor, errorRateValue),
+    stakeholderReview: buildStakeholderReview(),
     summary: recommendation.summary,
   };
 }

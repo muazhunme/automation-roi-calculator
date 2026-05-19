@@ -37,9 +37,12 @@ This project models that early discovery step with transparent, client-side scor
 - Manual vs automated workflow comparison
 - Opportunity backlog
 - Industry presets
+- Australia/AUD model with major Australian city cost indexes
 - AI vs RPA vs integration recommendation
 - Sensitivity analysis
 - Case study and model explanation pages
+- Saved scenarios in browser local storage
+- Stakeholder review checklist
 - Recommended automation type
 - Implementation timeline
 - Risk flags
@@ -125,6 +128,18 @@ Then open:
 http://127.0.0.1:4173/
 ```
 
+## Test Scoring Logic
+
+```bash
+node tests/scoring.test.mjs
+```
+
+The tests cover normal, low-value, unclear-process, judgement-heavy, high-TCO, and sample-scenario cases.
+
+## Important Limitation
+
+This is a discovery and screening tool, not a final financial approval model. A real business should validate time, labour cost, overhead, TCO, error/rework, and process assumptions with the relevant stakeholders before relying on the numbers.
+
 ## Suggested GitHub Repository
 
 ```text
@@ -159,7 +174,5 @@ This project shows:
 - Add printable report export
 - Add process comparison mode
 - Add impact vs effort matrix
-- Add saved scenarios with local storage
 - Add CSV export
-- Add test coverage for scoring logic
 - Add a deployment workflow for GitHub Pages

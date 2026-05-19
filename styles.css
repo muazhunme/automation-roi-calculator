@@ -476,6 +476,25 @@ button.secondary:hover {
   text-transform: uppercase;
 }
 
+.print-report-header {
+  display: none;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 16px;
+}
+
+.print-report-header h1 {
+  margin: 6px 0;
+  font-size: 2rem;
+  line-height: 1.1;
+}
+
+.print-report-header p:last-child,
+.saved-scenarios p,
+.empty-saved {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
 .samples {
   padding-top: 30px;
 }
@@ -508,6 +527,29 @@ button.secondary:hover {
 
 .sample-card small {
   color: var(--muted);
+}
+
+.saved-card {
+  min-height: 168px;
+}
+
+.saved-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.saved-actions button {
+  min-height: 34px;
+  padding: 0 12px;
+}
+
+.empty-saved {
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 18px;
 }
 
 .section-heading {
@@ -787,6 +829,10 @@ button.secondary:hover {
     border: 0;
     gap: 14px;
     padding: 0 0 18px;
+  }
+
+  .print-report-header {
+    display: block;
   }
 
   .report-watermark {
