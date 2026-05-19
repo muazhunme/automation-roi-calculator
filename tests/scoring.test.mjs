@@ -30,12 +30,53 @@ function calculate(overrides = {}) {
   const result = calculate();
   assert.equal(result.currency, "AUD");
   assert.equal(result.cityLabel, "Sydney");
+  assert.ok(result.readinessScore < 90);
   assert.ok(result.monthlySaving > 0);
   assert.ok(result.assumptions.some((item) => item.includes("Australia")));
   assert.ok(result.stakeholderReview.length >= 4);
   assert.equal(result.riskRange.length, 3);
   assert.ok(result.riskRange[0].monthlySaving <= result.riskRange[1].monthlySaving);
   assert.ok(result.riskRange[2].monthlySaving >= result.riskRange[1].monthlySaving);
+}
+
+{
+  const result = calculate({
+    hoursPerWeek: 80,
+    weeklyVolume: 2000,
+    hourlyCost: 80,
+    overheadPercent: 60,
+    monthlyAutomationTco: 100,
+    errorCost: 500,
+    opportunityValuePercent: 80,
+    annualVolumeGrowth: 80,
+    peopleInvolved: 20,
+    errorFrequency: "high",
+    processClarity: "partial",
+    toolComplexity: "many",
+    judgementLevel: "medium",
+  });
+  assert.ok(result.readinessScore <= 82);
+  assert.notEqual(result.readinessScore, 100);
+}
+
+{
+  const result = calculate({
+    hoursPerWeek: 80,
+    weeklyVolume: 2000,
+    hourlyCost: 80,
+    overheadPercent: 60,
+    monthlyAutomationTco: 100,
+    errorCost: 500,
+    opportunityValuePercent: 80,
+    annualVolumeGrowth: 80,
+    peopleInvolved: 20,
+    errorFrequency: "medium",
+    processClarity: "clear",
+    toolComplexity: "single",
+    judgementLevel: "low",
+  });
+  assert.ok(result.readinessScore <= 97);
+  assert.notEqual(result.readinessScore, 100);
 }
 
 {

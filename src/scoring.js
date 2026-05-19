@@ -235,6 +235,40 @@ function classifyConfidence(input) {
   return { score: confidence, label: "Low" };
 }
 
+function capReadinessScore(score, input) {
+  let cap = 92;
+
+  if (
+    input.processClarity === "clear" &&
+    input.judgementLevel === "low" &&
+    input.toolComplexity !== "many" &&
+    input.weeklyVolume >= 100 &&
+    input.hoursPerWeek >= 12
+  ) {
+    cap = 95;
+  }
+
+  if (
+    input.processClarity === "clear" &&
+    input.judgementLevel === "low" &&
+    input.toolComplexity === "single" &&
+    input.weeklyVolume >= 250 &&
+    input.hoursPerWeek >= 25 &&
+    input.errorFrequency !== "high"
+  ) {
+    cap = 97;
+  }
+
+  if (input.processClarity === "partial") cap = Math.min(cap, 82);
+  if (input.processClarity === "unclear") cap = Math.min(cap, 58);
+  if (input.judgementLevel === "medium") cap = Math.min(cap, 86);
+  if (input.judgementLevel === "high") cap = Math.min(cap, 72);
+  if (input.toolComplexity === "many") cap = Math.min(cap, 84);
+  if (input.weeklyVolume < 20 && input.hoursPerWeek < 5) cap = Math.min(cap, 68);
+
+  return Math.round(clamp(score, 0, cap));
+}
+
 function classifyMatrix(impact, effort) {
   if (impact >= 65 && effort < 55) {
     return {
@@ -690,6 +724,7 @@ export function calculateAutomationCase(input) {
   const monthlyCost = weeklyCost * 4.33;
   const peopleScore = clamp(input.peopleInvolved * 2, 2, 10);
   const industryScore = industryBoost(input);
+  const confidence = classifyConfidence(input);
 
   const automationFitScore = Math.round(
     clamp(
@@ -719,20 +754,10 @@ export function calculateAutomationCase(input) {
     )
   );
 
-  const rawScore =
-    profile.fit * 24 +
-    areaWeights[input.businessArea] +
-    industryScore +
-    levelWeights[input.errorFrequency] +
-    levelWeights[input.urgency] +
-    clarityWeights[input.processClarity] +
-    toolWeights[input.toolComplexity] +
-    judgementWeights[input.judgementLevel] +
-    scoreVolume(input.weeklyVolume) +
-    scoreHours(input.hoursPerWeek) +
-    peopleScore;
-
-  const readinessScore = Math.round(clamp(rawScore, 0, 100));
+  const readinessScore = capReadinessScore(
+    automationFitScore * 0.48 + businessValueScore * 0.34 + confidence.score * 0.18,
+    input
+  );
   const readinessFactor = clamp(readinessScore / 100, 0.25, 0.85);
   const estimatedHoursSaved = Math.round(input.hoursPerWeek * 4.33 * readinessFactor);
   const laborSavings = Math.round(monthlyCost * readinessFactor);
@@ -754,7 +779,6 @@ export function calculateAutomationCase(input) {
   const effortScore = Math.round(
     clamp(35 + toolEffort + clarityEffort + judgementEffort - profile.fit * 15, 0, 100)
   );
-  const confidence = classifyConfidence(input);
   const matrix = classifyMatrix(businessValueScore, effortScore);
   const complexity = classifyComplexity(input, effortScore);
   const buildCost = estimateBuildCost(complexity);
