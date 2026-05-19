@@ -3,7 +3,6 @@ import { calculateAutomationCase, sampleScenarios } from "./scoring.js";
 const form = document.querySelector("#auditForm");
 const resetButton = document.querySelector("#resetButton");
 const printButton = document.querySelector("#printButton");
-const pdfButton = document.querySelector("#pdfButton");
 const sampleGrid = document.querySelector("#sampleGrid");
 const pageTabs = document.querySelectorAll(".page-tab");
 const pages = document.querySelectorAll(".page");
@@ -195,11 +194,6 @@ resetButton.addEventListener("click", () => {
 });
 
 printButton.addEventListener("click", () => {
-  calculateAndRender();
-  window.print();
-});
-
-pdfButton.addEventListener("click", () => {
   calculateAndRender();
   window.print();
 });

@@ -178,6 +178,32 @@ label {
   font-weight: 700;
 }
 
+.label-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.info-tip {
+  display: inline-grid;
+  width: 17px;
+  height: 17px;
+  place-items: center;
+  border: 1px solid #b9c5bd;
+  border-radius: 50%;
+  background: #eef5f2;
+  color: var(--accent-dark);
+  cursor: help;
+  font-size: 0.7rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.info-tip:hover {
+  border-color: var(--accent);
+  background: #dff3ea;
+}
+
 input,
 select {
   min-height: 44px;
@@ -514,6 +540,30 @@ button.secondary:hover {
 
 .case-grid {
   grid-template-columns: repeat(3, 1fr);
+}
+
+.case-guide {
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--accent);
+  border-radius: 8px;
+  background: #ffffff;
+  margin-bottom: 18px;
+  padding: 22px;
+}
+
+.case-guide h2 {
+  margin: 0 0 10px;
+}
+
+.case-guide p,
+.case-guide li {
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.case-guide ol {
+  margin: 12px 0 0;
+  padding-left: 22px;
 }
 
 .explainer-grid article,

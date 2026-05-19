@@ -43,7 +43,7 @@
           </div>
 
           <label>
-            Business area
+            <span class="label-row">Business area <span class="info-tip" title="Choose the department or function that owns the manual process. This affects the business impact weighting.">i</span></span>
             <select id="businessArea" name="businessArea">
               <option value="finance">Finance</option>
               <option value="sales">Sales</option>
@@ -55,7 +55,7 @@
           </label>
 
           <label>
-            Task type
+            <span class="label-row">Task type <span class="info-tip" title="Choose the closest type of work being assessed. This changes the recommended automation style and first feature.">i</span></span>
             <select id="taskType" name="taskType">
               <option value="invoice">Invoice processing</option>
               <option value="crm">CRM updates</option>
@@ -69,7 +69,7 @@
           </label>
 
           <label>
-            Industry preset
+            <span class="label-row">Industry preset <span class="info-tip" title="Choose the closest industry. This slightly adjusts value for common high-impact areas like finance, compliance, operations, or support.">i</span></span>
             <select id="industry" name="industry">
               <option value="accounting" selected>Accounting / finance</option>
               <option value="healthcare">Healthcare</option>
@@ -83,59 +83,59 @@
 
           <div class="field-grid">
             <label>
-              Hours per week
+              <span class="label-row">Hours per week <span class="info-tip" title="Estimate the total human hours spent on this process each week across all people involved.">i</span></span>
               <input id="hoursPerWeek" name="hoursPerWeek" type="number" min="1" max="200" value="12" />
             </label>
 
             <label>
-              Hourly cost ($)
+              <span class="label-row">Hourly cost ($) <span class="info-tip" title="Enter the base hourly labour cost before benefits, tools, equipment, and overhead are added.">i</span></span>
               <input id="hourlyCost" name="hourlyCost" type="number" min="15" max="300" value="35" />
             </label>
           </div>
 
           <div class="field-grid">
             <label>
-              Labour overhead (%)
+              <span class="label-row">Labour overhead (%) <span class="info-tip" title="Add the extra cost of employing someone beyond wages, such as payroll tax, benefits, equipment, software, and management overhead.">i</span></span>
               <input id="overheadPercent" name="overheadPercent" type="number" min="0" max="100" value="30" />
             </label>
 
             <label>
-              Monthly automation TCO ($)
+              <span class="label-row">Monthly automation TCO ($) <span class="info-tip" title="Estimate ongoing automation ownership costs, including licensing, maintenance, support, monitoring, and platform fees.">i</span></span>
               <input id="monthlyAutomationTco" name="monthlyAutomationTco" type="number" min="0" max="10000" value="350" />
             </label>
           </div>
 
           <div class="field-grid">
             <label>
-              Rework cost per error ($)
+              <span class="label-row">Rework cost per error ($) <span class="info-tip" title="Estimate the average cost of one mistake, including correction time, delays, refunds, penalties, or customer impact.">i</span></span>
               <input id="errorCost" name="errorCost" type="number" min="0" max="5000" value="45" />
             </label>
 
             <label>
-              Annual volume growth (%)
+              <span class="label-row">Annual volume growth (%) <span class="info-tip" title="Estimate how much the process volume may grow over the next year. Growth helps show automation scalability.">i</span></span>
               <input id="annualVolumeGrowth" name="annualVolumeGrowth" type="number" min="0" max="200" value="15" />
             </label>
           </div>
 
           <label>
-            Opportunity value of freed time (%)
+            <span class="label-row">Opportunity value of freed time (%) <span class="info-tip" title="Estimate the extra value created when saved employee time is redirected to higher-value work instead of manual admin.">i</span></span>
             <input id="opportunityValuePercent" name="opportunityValuePercent" type="number" min="0" max="100" value="25" />
           </label>
 
           <div class="field-grid">
             <label>
-              People involved
+              <span class="label-row">People involved <span class="info-tip" title="Enter how many people touch this process. More handoffs can increase coordination cost and automation value.">i</span></span>
               <input id="peopleInvolved" name="peopleInvolved" type="number" min="1" max="50" value="3" />
             </label>
 
             <label>
-              Weekly volume
+              <span class="label-row">Weekly volume <span class="info-tip" title="Enter the number of transactions, records, invoices, emails, approvals, or cases handled each week.">i</span></span>
               <input id="weeklyVolume" name="weeklyVolume" type="number" min="1" max="5000" value="80" />
             </label>
           </div>
 
           <label>
-            Error frequency
+            <span class="label-row">Error frequency <span class="info-tip" title="Choose how often mistakes, rework, missing information, or manual corrections happen in this process.">i</span></span>
             <select id="errorFrequency" name="errorFrequency">
               <option value="low">Low</option>
               <option value="medium" selected>Medium</option>
@@ -144,7 +144,7 @@
           </label>
 
           <label>
-            Process clarity
+            <span class="label-row">Process clarity <span class="info-tip" title="Choose how well the process is documented and understood. Unclear processes should usually be fixed before automation.">i</span></span>
             <select id="processClarity" name="processClarity">
               <option value="clear" selected>Clear and documented</option>
               <option value="partial">Partially documented</option>
@@ -153,7 +153,7 @@
           </label>
 
           <label>
-            Current tools
+            <span class="label-row">Current tools <span class="info-tip" title="Choose how many systems, spreadsheets, inboxes, or apps the process depends on. More tools usually means more integration effort.">i</span></span>
             <select id="toolComplexity" name="toolComplexity">
               <option value="single">One main system</option>
               <option value="few" selected>Two to three systems</option>
@@ -162,7 +162,7 @@
           </label>
 
           <label>
-            Human judgement required
+            <span class="label-row">Human judgement required <span class="info-tip" title="Choose how much subjective decision-making is needed. High judgement may suit AI assistance rather than full automation.">i</span></span>
             <select id="judgementLevel" name="judgementLevel">
               <option value="low" selected>Low - mostly rules-based</option>
               <option value="medium">Medium - some exceptions</option>
@@ -171,7 +171,7 @@
           </label>
 
           <label>
-            Urgency / pain level
+            <span class="label-row">Urgency / pain level <span class="info-tip" title="Choose how painful or urgent this process is for the business. Higher pain increases business value.">i</span></span>
             <select id="urgency" name="urgency">
               <option value="low">Low</option>
               <option value="medium" selected>Medium</option>
@@ -182,7 +182,6 @@
           <div class="button-row">
             <button type="submit">Calculate ROI</button>
             <button type="button" class="secondary" id="printButton">Print report</button>
-            <button type="button" class="secondary" id="pdfButton">Save PDF</button>
             <button type="button" class="secondary" id="resetButton">Reset</button>
           </div>
         </form>
@@ -507,6 +506,20 @@
             estimating value, identifying risks, and recommending the safest next move.
           </p>
         </div>
+
+        <section class="case-guide">
+          <h2>What to do here</h2>
+          <p>
+            Use this page to explain the project in interviews, portfolio reviews, or conversations with automation companies.
+            Walk through the problem, the scoring approach, and the business value of not blindly recommending automation.
+          </p>
+          <ol>
+            <li>Start with the problem: businesses often automate before understanding readiness, cost, and risk.</li>
+            <li>Show the assessment page and explain the inputs, scores, and decision advisor.</li>
+            <li>Use a sample scenario to explain why the app recommends automate, improve first, or do not automate yet.</li>
+            <li>Point to the report output as the deliverable a consultant could give to a client.</li>
+          </ol>
+        </section>
 
         <div class="case-grid">
           <article>
