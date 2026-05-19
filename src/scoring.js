@@ -305,8 +305,9 @@ function buildRoadmap(score) {
   ];
 }
 
-function buildDecision(score, input, matrix) {
+function buildDecision(score, input, matrix, businessValueScore, monthlySaving) {
   if (score < 45) return "Do not automate yet";
+  if (businessValueScore < 35 || monthlySaving < 250) return "Monitor before automation";
   if (input.processClarity === "unclear") return "Document process first";
   if (input.toolComplexity === "many" && score < 72) return "Integrate systems first";
   if (input.judgementLevel === "high") return "Use AI decision support";
@@ -506,7 +507,16 @@ function explainConfidence(confidence, input) {
   return `Confidence is ${confidence.label.toLowerCase()} because ${reasons.join(", ")}.`;
 }
 
-function buildRecommendation(score, profile, monthlySaving, estimatedHoursSaved) {
+function buildRecommendation({
+  score,
+  profile,
+  monthlySaving,
+  estimatedHoursSaved,
+  businessValueScore,
+  matrix,
+  payback,
+  decision,
+}) {
   if (score < 45) {
     return {
       solution: "Do not automate yet",
@@ -514,10 +524,17 @@ function buildRecommendation(score, profile, monthlySaving, estimatedHoursSaved)
     };
   }
 
-  if (score < 62) {
+  if (businessValueScore < 35 || monthlySaving < 250 || payback.months === null) {
+    return {
+      solution: "Improve or monitor before automation",
+      summary: `This is a ${profile.keywords} process, but the business case is not strong enough for automation yet. The technical fit may exist, but the current volume, savings, or payback is too low. The safer next step is to monitor the process, improve the workflow, and reassess if volume, errors, or manual cost increase.`,
+    };
+  }
+
+  if (score < 62 || matrix.quadrant === "Optional improvement") {
     return {
       solution: "Improve the process before automation",
-      summary: `This is a ${profile.keywords} process with some automation potential, but it needs process improvement before build work starts. The recommended next step is to clarify the workflow, remove avoidable manual steps, and confirm the business case before considering ${profile.solution.toLowerCase()}.`,
+      summary: `This is a ${profile.keywords} process with some automation potential, but it is not the first automation priority. The recommended next move is ${decision.toLowerCase()}: clarify the workflow, confirm the business case, and only consider ${profile.solution.toLowerCase()} if savings or volume become more meaningful.`,
     };
   }
 
@@ -632,15 +649,19 @@ export function calculateAutomationCase(input) {
   const complexity = classifyComplexity(input, effortScore);
   const buildCost = estimateBuildCost(complexity);
   const payback = buildPayback(monthlySaving, buildCost);
-  const decision = buildDecision(readinessScore, input, matrix);
+  const decision = buildDecision(readinessScore, input, matrix, businessValueScore, monthlySaving);
   const firstFeature = firstAutomationFeature(input.taskType);
   const automationStyle = chooseAutomationStyle(input);
-  const recommendation = buildRecommendation(
-    readinessScore,
+  const recommendation = buildRecommendation({
+    score: readinessScore,
     profile,
     monthlySaving,
-    estimatedHoursSaved
-  );
+    estimatedHoursSaved,
+    businessValueScore,
+    matrix,
+    payback,
+    decision,
+  });
 
   return {
     readinessScore,
