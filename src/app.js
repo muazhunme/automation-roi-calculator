@@ -6,9 +6,14 @@ const printButton = document.querySelector("#printButton");
 const saveScenarioButton = document.querySelector("#saveScenarioButton");
 const sampleGrid = document.querySelector("#sampleGrid");
 const savedScenarioGrid = document.querySelector("#savedScenarioGrid");
+const dataImportFile = document.querySelector("#dataImportFile");
+const applyImportButton = document.querySelector("#applyImportButton");
+const clearImportButton = document.querySelector("#clearImportButton");
+const importResults = document.querySelector("#importResults");
 const pageTabs = document.querySelectorAll(".page-tab");
 const pages = document.querySelectorAll(".page");
 const savedScenarioKey = "automationRoiSavedScenarios";
+let importedEstimates = null;
 
 const fields = [
   "industry",
@@ -78,6 +83,15 @@ function money(value) {
     currency: "AUD",
     maximumFractionDigits: 0,
   }).format(value);
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 function reportTimestamp() {
@@ -163,6 +177,7 @@ function renderEmptyState() {
   ].forEach((selector) => {
     document.querySelector(selector).replaceChildren();
   });
+  document.querySelector("#riskRangeGrid").replaceChildren();
 
   document.querySelector("#firstFeature").textContent = "No first feature selected yet.";
   document.querySelector("#confidenceExplanation").textContent = "No confidence explanation yet.";
@@ -232,6 +247,22 @@ function renderResults(result) {
   );
   renderList("#assumptionList", result.assumptions);
   renderList("#stakeholderList", result.stakeholderReview);
+
+  const riskRangeGrid = document.querySelector("#riskRangeGrid");
+  riskRangeGrid.replaceChildren(
+    ...result.riskRange.map((scenario) => {
+      const card = document.createElement("div");
+      card.className = "risk-range-card";
+      card.innerHTML = `
+        <span>${scenario.label}</span>
+        <strong>${money(scenario.monthlySaving)} / month</strong>
+        <small>${money(scenario.yearlySaving)} yearly saving</small>
+        <small>Payback: ${scenario.payback}</small>
+        <p>${scenario.note}</p>
+      `;
+      return card;
+    })
+  );
 
   const roadmapList = document.querySelector("#roadmapList");
   roadmapList.replaceChildren(
@@ -340,6 +371,132 @@ function renderSavedScenarios() {
   );
 }
 
+function parseCsv(text) {
+  const rows = [];
+  let row = [];
+  let value = "";
+  let quoted = false;
+
+  for (let index = 0; index < text.length; index += 1) {
+    const char = text[index];
+    const next = text[index + 1];
+
+    if (char === '"' && quoted && next === '"') {
+      value += '"';
+      index += 1;
+    } else if (char === '"') {
+      quoted = !quoted;
+    } else if (char === "," && !quoted) {
+      row.push(value.trim());
+      value = "";
+    } else if ((char === "\n" || char === "\r") && !quoted) {
+      if (char === "\r" && next === "\n") index += 1;
+      row.push(value.trim());
+      if (row.some(Boolean)) rows.push(row);
+      row = [];
+      value = "";
+    } else {
+      value += char;
+    }
+  }
+
+  row.push(value.trim());
+  if (row.some(Boolean)) rows.push(row);
+  return rows;
+}
+
+function normaliseHeader(header) {
+  return header.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
+}
+
+function parseYesNo(value) {
+  return ["yes", "y", "true", "1", "rework", "error"].includes(String(value).toLowerCase());
+}
+
+function numberFrom(value) {
+  return Number(String(value).replace(/[$,\s]/g, "")) || 0;
+}
+
+function dateFrom(value) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
+function errorFrequencyFromRate(rate) {
+  if (rate >= 0.06) return "high";
+  if (rate >= 0.025) return "medium";
+  return "low";
+}
+
+function estimateFromCsv(text) {
+  const rows = parseCsv(text);
+  if (rows.length < 2) throw new Error("The CSV needs a header row and at least one data row.");
+
+  const headers = rows[0].map(normaliseHeader);
+  const records = rows.slice(1).map((row) =>
+    Object.fromEntries(headers.map((header, index) => [header, row[index] || ""]))
+  );
+  const validRecords = records.filter((record) => record.process_id || record.date || record.handling_minutes);
+
+  if (validRecords.length === 0) {
+    throw new Error("No usable process records were found.");
+  }
+
+  const dates = validRecords.map((record) => dateFrom(record.date)).filter(Boolean);
+  const firstDate = dates.length ? Math.min(...dates.map((date) => date.getTime())) : Date.now();
+  const lastDate = dates.length ? Math.max(...dates.map((date) => date.getTime())) : Date.now();
+  const observedDays = Math.max(1, Math.round((lastDate - firstDate) / 86400000) + 1);
+  const observedWeeks = Math.max(1, observedDays / 7);
+  const totalMinutes = validRecords.reduce((sum, record) => sum + numberFrom(record.handling_minutes), 0);
+  const errorRecords = validRecords.filter((record) => parseYesNo(record.error_rework));
+  const totalReworkCost = errorRecords.reduce((sum, record) => sum + numberFrom(record.rework_cost), 0);
+  const weeklyVolume = Math.round(validRecords.length / observedWeeks);
+  const hoursPerWeek = Math.max(1, Math.round((totalMinutes / 60 / observedWeeks) * 10) / 10);
+  const errorRate = errorRecords.length / validRecords.length;
+  const errorCost = errorRecords.length ? Math.round(totalReworkCost / errorRecords.length) : 0;
+
+  return {
+    recordCount: validRecords.length,
+    observedWeeks: Math.round(observedWeeks * 10) / 10,
+    weeklyVolume,
+    hoursPerWeek,
+    errorRate,
+    errorFrequency: errorFrequencyFromRate(errorRate),
+    errorCost,
+  };
+}
+
+function renderImportPreview(estimate, fileName) {
+  importResults.innerHTML = `
+    <div class="section-heading compact">
+      <p class="eyebrow">Import preview</p>
+      <h2>${escapeHtml(fileName)}</h2>
+      <p>These values can auto-fill the assessment form. Review them before using the report for approval.</p>
+    </div>
+    <div class="metric-grid">
+      <div><span>Records analysed</span><strong>${estimate.recordCount}</strong></div>
+      <div><span>Observed period</span><strong>${estimate.observedWeeks} weeks</strong></div>
+      <div><span>Weekly volume</span><strong>${estimate.weeklyVolume}</strong></div>
+      <div><span>Hours per week</span><strong>${estimate.hoursPerWeek}</strong></div>
+      <div><span>Error rate</span><strong>${Math.round(estimate.errorRate * 1000) / 10}%</strong></div>
+      <div><span>Avg rework cost</span><strong>${money(estimate.errorCost)}</strong></div>
+    </div>
+    <div class="case-guide import-note">
+      <h2>What will be updated</h2>
+      <p>Hours per week, weekly volume, error frequency, and rework cost per error will be filled from the uploaded file. Labour cost, TCO, overhead, city, and business context still need business review.</p>
+    </div>
+  `;
+}
+
+function renderImportError(message) {
+  importResults.innerHTML = `
+    <div class="case-guide import-note">
+      <h2>Import problem</h2>
+      <p>${escapeHtml(message)}</p>
+    </div>
+  `;
+}
+
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   calculateAndRender();
@@ -361,6 +518,57 @@ saveScenarioButton.addEventListener("click", () => {
   storeSavedScenarios([scenario, ...loadSavedScenarios()].slice(0, 8));
   renderSavedScenarios();
   calculateAndRender();
+});
+
+dataImportFile.addEventListener("change", async () => {
+  const [file] = dataImportFile.files;
+  importedEstimates = null;
+  applyImportButton.disabled = true;
+
+  if (!file) {
+    renderImportError("Choose an Excel-exported CSV file first.");
+    return;
+  }
+
+  try {
+    const text = await file.text();
+    importedEstimates = estimateFromCsv(text);
+    applyImportButton.disabled = false;
+    renderImportPreview(importedEstimates, file.name);
+  } catch (error) {
+    renderImportError(error.message);
+  }
+});
+
+applyImportButton.addEventListener("click", () => {
+  if (!importedEstimates) return;
+
+  form.elements.hoursPerWeek.value = importedEstimates.hoursPerWeek;
+  form.elements.weeklyVolume.value = importedEstimates.weeklyVolume;
+  form.elements.errorFrequency.value = importedEstimates.errorFrequency;
+  form.elements.errorCost.value = importedEstimates.errorCost;
+  calculateAndRender();
+
+  pageTabs.forEach((pageTab) => {
+    pageTab.classList.toggle("active", pageTab.dataset.page === "assessment");
+  });
+  pages.forEach((page) => {
+    page.classList.toggle("active", page.id === "assessmentPage");
+  });
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+clearImportButton.addEventListener("click", () => {
+  dataImportFile.value = "";
+  importedEstimates = null;
+  applyImportButton.disabled = true;
+  importResults.innerHTML = `
+    <div class="section-heading compact">
+      <p class="eyebrow">Import preview</p>
+      <h2>No file imported yet</h2>
+      <p>Upload the sample CSV or your own Excel-exported CSV to preview calculated assumptions.</p>
+    </div>
+  `;
 });
 
 resetButton.addEventListener("click", () => {

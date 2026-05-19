@@ -516,6 +516,48 @@ function buildSensitivity(monthlySaving, readinessFactor, growthMonthlyBenefit) 
   ];
 }
 
+function buildRiskRange(monthlySaving, grossMonthlyBenefit, monthlyAutomationTco, buildCost) {
+  const cases = [
+    {
+      label: "Conservative",
+      multiplier: 0.7,
+      note: "Lower adoption, slower rollout, or more exception handling.",
+    },
+    {
+      label: "Expected",
+      multiplier: 1,
+      note: "Uses the current calculator assumptions.",
+    },
+    {
+      label: "Optimistic",
+      multiplier: 1.25,
+      note: "Cleaner data, stronger adoption, and fewer exceptions.",
+    },
+  ];
+
+  return cases.map((scenario) => {
+    const netMonthlySaving =
+      scenario.label === "Expected"
+        ? monthlySaving
+        : Math.round(grossMonthlyBenefit * scenario.multiplier - monthlyAutomationTco);
+    const yearlySaving = netMonthlySaving * 12;
+    const payback =
+      netMonthlySaving < 100
+        ? "Not meaningful yet"
+        : buildCost / netMonthlySaving < 1
+          ? "Under 1 month"
+          : `${(buildCost / netMonthlySaving).toFixed(1)} months`;
+
+    return {
+      label: scenario.label,
+      monthlySaving: netMonthlySaving,
+      yearlySaving,
+      payback,
+      note: scenario.note,
+    };
+  });
+}
+
 function explainConfidence(confidence, input) {
   const reasons = [];
   if (input.processClarity !== "clear") reasons.push("the process is not fully documented");
@@ -772,6 +814,7 @@ export function calculateAutomationCase(input) {
     workflow: buildWorkflow(input.taskType),
     opportunityBacklog: buildOpportunityBacklog(input, decision, firstFeature),
     sensitivity: buildSensitivity(monthlySaving, readinessFactor, scaledMonthlyBenefit),
+    riskRange: buildRiskRange(monthlySaving, grossMonthlyBenefit, input.monthlyAutomationTco, buildCost),
     risks: buildRisks(input),
     assumptions: buildAssumptions(input, city, readinessFactor, errorRateValue),
     stakeholderReview: buildStakeholderReview(),

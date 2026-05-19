@@ -14,6 +14,7 @@
     <main class="app-shell">
       <nav class="app-nav" aria-label="Application pages">
         <button class="page-tab active" type="button" data-page="assessment">Assessment</button>
+        <button class="page-tab" type="button" data-page="data">Data import</button>
         <button class="page-tab" type="button" data-page="how">How it works</button>
         <button class="page-tab" type="button" data-page="case">Case study</button>
       </nav>
@@ -394,6 +395,11 @@
           </div>
 
           <div class="insight-block">
+            <h3>Sensitivity / risk range</h3>
+            <div class="risk-range-grid" id="riskRangeGrid"></div>
+          </div>
+
+          <div class="insight-block">
             <h3>Risk flags</h3>
             <ul id="riskList"></ul>
           </div>
@@ -431,6 +437,54 @@
         <div class="sample-grid" id="savedScenarioGrid"></div>
       </section>
       </div>
+
+      <section class="page data-page" id="dataPage">
+        <div class="section-heading">
+          <p class="eyebrow">Data-assisted assessment</p>
+          <h1>Import process data from Excel</h1>
+          <p>
+            Upload an Excel-compatible CSV export from invoices, tickets, CRM activity, approvals, or process logs.
+            The app estimates weekly volume, handling time, error frequency, and rework cost from real records.
+          </p>
+        </div>
+
+        <section class="case-guide">
+          <h2>Accepted file format</h2>
+          <p>
+            Save the spreadsheet as CSV from Excel, then upload it here. The file stays in your browser and is not sent to a server.
+          </p>
+          <ol>
+            <li><strong>date</strong> - process date, such as 2026-04-01.</li>
+            <li><strong>process_id</strong> - invoice, ticket, lead, approval, or record ID.</li>
+            <li><strong>handling_minutes</strong> - human time spent on the item.</li>
+            <li><strong>error_rework</strong> - yes/no value showing whether rework happened.</li>
+            <li><strong>rework_cost</strong> - estimated AUD cost of that rework item.</li>
+          </ol>
+          <p>
+            <a href="./data/sample-australia-invoice-process.csv" download>Download sample CSV dataset</a>
+          </p>
+        </section>
+
+        <section class="import-panel">
+          <label>
+            <span class="label-row">Upload CSV file <span class="info-tip" title="Export an Excel sheet as CSV, then upload it. The app reads common process columns and estimates calculator inputs.">i</span></span>
+            <input id="dataImportFile" type="file" accept=".csv,text/csv" />
+          </label>
+
+          <div class="button-row">
+            <button type="button" id="applyImportButton" disabled>Use imported estimates</button>
+            <button type="button" class="secondary" id="clearImportButton">Clear import</button>
+          </div>
+        </section>
+
+        <section class="import-results" id="importResults">
+          <div class="section-heading compact">
+            <p class="eyebrow">Import preview</p>
+            <h2>No file imported yet</h2>
+            <p>Upload the sample CSV or your own Excel-exported CSV to preview calculated assumptions.</p>
+          </div>
+        </section>
+      </section>
 
       <section class="page explainer-page" id="howPage">
         <div class="section-heading">
@@ -474,6 +528,14 @@
           <article>
             <h2>Scaling and opportunity value</h2>
             <p>It models one-year volume growth and adds a value estimate for reallocating saved human time to higher-value work.</p>
+          </article>
+          <article>
+            <h2>Data import</h2>
+            <p>Excel-exported CSV files can improve the estimate by calculating volume, handling time, error rate, and rework cost from real process records.</p>
+          </article>
+          <article>
+            <h2>Risk range</h2>
+            <p>The report shows conservative, expected, and optimistic outcomes so reviewers can see uncertainty instead of trusting one fixed number.</p>
           </article>
         </div>
 

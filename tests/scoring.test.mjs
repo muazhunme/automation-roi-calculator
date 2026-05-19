@@ -33,6 +33,9 @@ function calculate(overrides = {}) {
   assert.ok(result.monthlySaving > 0);
   assert.ok(result.assumptions.some((item) => item.includes("Australia")));
   assert.ok(result.stakeholderReview.length >= 4);
+  assert.equal(result.riskRange.length, 3);
+  assert.ok(result.riskRange[0].monthlySaving <= result.riskRange[1].monthlySaving);
+  assert.ok(result.riskRange[2].monthlySaving >= result.riskRange[1].monthlySaving);
 }
 
 {

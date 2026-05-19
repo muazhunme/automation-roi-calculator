@@ -43,6 +43,8 @@ This project models that early discovery step with transparent, client-side scor
 - Case study and model explanation pages
 - Saved scenarios in browser local storage
 - Stakeholder review checklist
+- Excel-compatible CSV data import
+- Sensitivity/risk range for conservative, expected, and optimistic cases
 - Recommended automation type
 - Implementation timeline
 - Risk flags
@@ -80,6 +82,10 @@ automation-roi-calculator/
   src/
     app.js
     scoring.js
+  data/
+    sample-australia-invoice-process.csv
+  tests/
+    scoring.test.mjs
 ```
 
 ## How It Works
@@ -115,6 +121,8 @@ The scoring engine estimates:
 - confidence level
 - suggested roadmap
 - delivery risks
+
+The Data Import page can read an Excel-exported CSV with columns such as `date`, `process_id`, `handling_minutes`, `error_rework`, and `rework_cost`. It uses that dataset to estimate weekly volume, hours per week, error frequency, and average rework cost.
 
 ## Run Locally
 

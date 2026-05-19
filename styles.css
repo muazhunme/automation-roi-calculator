@@ -286,7 +286,8 @@ button.secondary:hover {
 }
 
 .metric-grid,
-.cost-grid {
+.cost-grid,
+.risk-range-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 12px;
@@ -297,7 +298,8 @@ button.secondary:hover {
 }
 
 .metric-grid div,
-.cost-grid div {
+.cost-grid div,
+.risk-range-card {
   min-height: 96px;
   display: grid;
   align-content: center;
@@ -309,9 +311,25 @@ button.secondary:hover {
 }
 
 .metric-grid strong,
-.cost-grid strong {
+.cost-grid strong,
+.risk-range-card strong {
   font-size: 1.35rem;
   color: var(--ink);
+}
+
+.risk-range-card span,
+.risk-range-card small {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.risk-range-card p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  line-height: 1.45;
 }
 
 .score-breakdown {
@@ -601,6 +619,28 @@ button.secondary:hover {
   padding: 22px;
 }
 
+.import-panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  margin-bottom: 18px;
+  padding: 22px;
+}
+
+.import-results {
+  display: grid;
+  gap: 16px;
+}
+
+.import-note {
+  margin-top: 0;
+}
+
+.data-page a {
+  color: var(--accent-dark);
+  font-weight: 900;
+}
+
 .case-guide h2 {
   margin: 0 0 10px;
 }
@@ -751,7 +791,8 @@ button.secondary:hover {
 
   .metric-grid,
   .cost-grid,
-  .score-breakdown,
+    .score-breakdown,
+    .risk-range-grid,
   .insight-grid,
   .workflow-grid,
   .explainer-grid,
@@ -783,7 +824,8 @@ button.secondary:hover {
   .field-grid,
   .metric-grid,
   .cost-grid,
-  .score-breakdown,
+    .score-breakdown,
+    .risk-range-grid,
   .insight-grid,
   .workflow-grid,
   .explainer-grid,
@@ -812,6 +854,7 @@ button.secondary:hover {
   .samples,
   .app-nav,
   .explainer-page,
+  .data-page,
   .case-page {
     display: none;
   }
