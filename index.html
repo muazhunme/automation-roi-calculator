@@ -508,33 +508,122 @@
         </div>
 
         <section class="case-guide">
-          <h2>What to do here</h2>
+          <h2>Executive summary</h2>
           <p>
-            Use this page to explain the project in interviews, portfolio reviews, or conversations with automation companies.
-            Walk through the problem, the scoring approach, and the business value of not blindly recommending automation.
+            I built a browser-based automation discovery tool that helps a business decide whether a manual workflow should
+            be automated now, improved first, supported with AI, integrated across systems, or left alone for the moment.
+            The goal is to make automation decisions more realistic by combining ROI, process readiness, risk, and strategic value.
           </p>
           <ol>
-            <li>Start with the problem: businesses often automate before understanding readiness, cost, and risk.</li>
-            <li>Show the assessment page and explain the inputs, scores, and decision advisor.</li>
-            <li>Use a sample scenario to explain why the app recommends automate, improve first, or do not automate yet.</li>
-            <li>Point to the report output as the deliverable a consultant could give to a client.</li>
+            <li>The app collects process, labour, error, tool, judgement, and growth assumptions.</li>
+            <li>It calculates automation fit, business value, confidence, net monthly saving, payback, and scaling impact.</li>
+            <li>It produces a decision, reason codes, readiness checklist, roadmap, workflow comparison, and printable report.</li>
           </ol>
         </section>
 
         <div class="case-grid">
           <article>
             <h2>Problem</h2>
-            <p>Businesses often automate too early or choose the wrong tool before understanding process readiness.</p>
+            <p>Businesses often automate too early or choose the wrong tool before understanding process readiness, true labour cost, system complexity, and risk.</p>
           </article>
           <article>
             <h2>Approach</h2>
-            <p>I built a transparent rules-based model that compares readiness, savings, complexity, confidence, and risk.</p>
+            <p>I built a transparent rules-based model that compares readiness, savings, TCO, complexity, confidence, risk, payback, and long-term scaling benefit.</p>
           </article>
           <article>
             <h2>Result</h2>
             <p>The app produces an explainable recommendation, roadmap, checklist, workflow comparison, and printable report.</p>
           </article>
         </div>
+
+        <section class="case-detail-grid">
+          <article>
+            <h2>Target users</h2>
+            <p>
+              The tool is designed for small business owners, operations teams, consultants, and automation analysts who need
+              to quickly screen a manual process before investing in RPA, workflow automation, AI support, or system integration.
+            </p>
+          </article>
+          <article>
+            <h2>Why this matters</h2>
+            <p>
+              A weak automation business case can waste time and money. A strong assessment should show not only how much time
+              is saved, but also whether the process is clear enough, stable enough, and valuable enough to automate.
+            </p>
+          </article>
+          <article>
+            <h2>Key design decision</h2>
+            <p>
+              I separated automation fit from business value. This is important because a process can be technically easy to
+              automate but not worth the investment, or financially valuable but too risky until the workflow is improved.
+            </p>
+          </article>
+          <article>
+            <h2>Scoring model</h2>
+            <p>
+              The model uses process type, hours, burdened labour cost, volume, error frequency, tool complexity, human judgement,
+              process clarity, TCO, opportunity value, and annual growth to produce a recommendation.
+            </p>
+          </article>
+        </section>
+
+        <section class="case-example">
+          <div>
+            <p class="eyebrow">Example assessment</p>
+            <h2>Invoice processing workflow</h2>
+            <p>
+              A finance team spends 12 hours per week manually processing around 80 invoices. The base hourly cost is $35,
+              with 30% overhead, medium error frequency, and a monthly automation TCO estimate of $350.
+            </p>
+          </div>
+          <div class="case-metrics">
+            <div><span>Decision</span><strong>Automate now</strong></div>
+            <div><span>First feature</span><strong>Duplicate detection + approval routing</strong></div>
+            <div><span>Payback</span><strong>About 1 month</strong></div>
+            <div><span>Why</span><strong>High volume, low judgement, clear workflow</strong></div>
+          </div>
+        </section>
+
+        <section class="case-detail-grid">
+          <article>
+            <h2>What makes it different</h2>
+            <p>
+              The app does not always say yes to automation. Low-readiness cases are told to document the process, standardise
+              inputs, clean data, and reassess later. High-judgement cases are directed toward AI decision support instead of full automation.
+            </p>
+          </article>
+          <article>
+            <h2>Business deliverable</h2>
+            <p>
+              The output acts like a lightweight consulting report: recommendation, reason codes, ROI estimate, risk severity,
+              readiness checklist, required inputs, manual-versus-automated workflow, and a practical roadmap.
+            </p>
+          </article>
+          <article>
+            <h2>Technical implementation</h2>
+            <p>
+              The project is built as a static HTML, CSS, and JavaScript app. All calculations run locally in the browser, so
+              it needs no backend, login, paid API, database, or customer data storage.
+            </p>
+          </article>
+          <article>
+            <h2>Limitations</h2>
+            <p>
+              The calculator is a discovery tool, not a guaranteed financial model. Real projects still need stakeholder interviews,
+              process observation, system access checks, security review, and validation against actual business data.
+            </p>
+          </article>
+        </section>
+
+        <section class="case-guide">
+          <h2>What this project demonstrates</h2>
+          <ol>
+            <li>Ability to translate a business consulting problem into a working product.</li>
+            <li>Understanding of ROI, TCO, opportunity cost, process readiness, and risk.</li>
+            <li>Practical frontend implementation with dashboard-style reporting and print output.</li>
+            <li>Product thinking: the app recommends the safest next move, not just the most exciting technology.</li>
+          </ol>
+        </section>
       </section>
     </main>
 

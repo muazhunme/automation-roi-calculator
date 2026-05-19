@@ -538,8 +538,16 @@ button.secondary:hover {
   gap: 16px;
 }
 
-.case-grid {
+.case-grid,
+.case-detail-grid {
   grid-template-columns: repeat(3, 1fr);
+}
+
+.case-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 18px;
 }
 
 .case-guide {
@@ -567,20 +575,63 @@ button.secondary:hover {
 }
 
 .explainer-grid article,
-.case-grid article {
+.case-grid article,
+.case-detail-grid article {
   padding: 22px;
 }
 
 .explainer-grid h2,
-.case-grid h2 {
+.case-grid h2,
+.case-detail-grid h2,
+.case-example h2 {
   margin: 0 0 10px;
 }
 
 .explainer-grid p,
-.case-grid p {
+.case-grid p,
+.case-detail-grid p,
+.case-example p {
   margin: 0;
   color: var(--muted);
   line-height: 1.6;
+}
+
+.case-example {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  margin-top: 18px;
+  padding: 22px;
+}
+
+.case-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.case-metrics div {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfcfa;
+  padding: 14px;
+}
+
+.case-metrics span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.case-metrics strong {
+  color: var(--ink);
 }
 
 .model-flow {
@@ -663,6 +714,9 @@ button.secondary:hover {
   .workflow-grid,
   .explainer-grid,
   .case-grid,
+  .case-detail-grid,
+  .case-example,
+  .case-metrics,
   .model-flow,
   .source-grid,
   .sample-grid {
@@ -692,6 +746,9 @@ button.secondary:hover {
   .workflow-grid,
   .explainer-grid,
   .case-grid,
+  .case-detail-grid,
+  .case-example,
+  .case-metrics,
   .model-flow,
   .source-grid,
   .sample-grid {
