@@ -7,6 +7,7 @@ const saveScenarioButton = document.querySelector("#saveScenarioButton");
 const sampleGrid = document.querySelector("#sampleGrid");
 const savedScenarioGrid = document.querySelector("#savedScenarioGrid");
 const dataImportFile = document.querySelector("#dataImportFile");
+const loadSampleDataButton = document.querySelector("#loadSampleDataButton");
 const applyImportButton = document.querySelector("#applyImportButton");
 const clearImportButton = document.querySelector("#clearImportButton");
 const importResults = document.querySelector("#importResults");
@@ -428,6 +429,18 @@ function errorFrequencyFromRate(rate) {
   return "low";
 }
 
+function formatDate(value) {
+  return new Intl.DateTimeFormat("en-AU", {
+    dateStyle: "medium",
+  }).format(new Date(value));
+}
+
+function topEntries(entries, limit = 4) {
+  return Object.entries(entries)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit);
+}
+
 function estimateFromCsv(text) {
   const rows = parseCsv(text);
   if (rows.length < 2) throw new Error("The CSV needs a header row and at least one data row.");
@@ -454,15 +467,71 @@ function estimateFromCsv(text) {
   const hoursPerWeek = Math.max(1, Math.round((totalMinutes / 60 / observedWeeks) * 10) / 10);
   const errorRate = errorRecords.length / validRecords.length;
   const errorCost = errorRecords.length ? Math.round(totalReworkCost / errorRecords.length) : 0;
+  const missingHandling = validRecords.filter((record) => !numberFrom(record.handling_minutes)).length;
+  const missingDates = validRecords.length - dates.length;
+  const errorTypes = {};
+  const systems = {};
+  let approvalRequired = 0;
+
+  errorRecords.forEach((record) => {
+    const type = record.error_type || "unspecified";
+    errorTypes[type] = (errorTypes[type] || 0) + 1;
+  });
+
+  validRecords.forEach((record) => {
+    const system = record.system_used || "unspecified";
+    systems[system] = (systems[system] || 0) + 1;
+    if (parseYesNo(record.approval_required)) approvalRequired += 1;
+  });
+
+  const dataQuality = [
+    {
+      label: "Date coverage",
+      status: missingDates === 0 ? "Good" : "Review",
+      text:
+        missingDates === 0
+          ? "Every analysed record has a usable date."
+          : `${missingDates} records are missing usable dates.`,
+    },
+    {
+      label: "Handling time",
+      status: missingHandling === 0 ? "Good" : "Review",
+      text:
+        missingHandling === 0
+          ? "Every analysed record has handling minutes."
+          : `${missingHandling} records are missing handling minutes.`,
+    },
+    {
+      label: "Observation window",
+      status: observedWeeks >= 4 ? "Good" : "Review",
+      text:
+        observedWeeks >= 4
+          ? "The file covers at least four weeks of activity."
+          : "The file covers less than four weeks, so trends may be noisy.",
+    },
+  ];
 
   return {
     recordCount: validRecords.length,
+    dateRange: `${formatDate(firstDate)} to ${formatDate(lastDate)}`,
     observedWeeks: Math.round(observedWeeks * 10) / 10,
+    totalHours: Math.round((totalMinutes / 60) * 10) / 10,
+    averageHandlingMinutes: Math.round((totalMinutes / validRecords.length) * 10) / 10,
     weeklyVolume,
+    monthlyVolume: Math.round(weeklyVolume * 4.33),
     hoursPerWeek,
+    monthlyHours: Math.round(hoursPerWeek * 4.33 * 10) / 10,
+    errorCount: errorRecords.length,
+    cleanCount: validRecords.length - errorRecords.length,
     errorRate,
     errorFrequency: errorFrequencyFromRate(errorRate),
     errorCost,
+    totalReworkCost,
+    approvalRate: approvalRequired / validRecords.length,
+    dataQuality,
+    errorBreakdown: topEntries(errorTypes),
+    systemBreakdown: topEntries(systems),
+    sampleRows: validRecords.slice(0, 5),
   };
 }
 
@@ -475,15 +544,88 @@ function renderImportPreview(estimate, fileName) {
     </div>
     <div class="metric-grid">
       <div><span>Records analysed</span><strong>${estimate.recordCount}</strong></div>
+      <div><span>Date range</span><strong>${estimate.dateRange}</strong></div>
       <div><span>Observed period</span><strong>${estimate.observedWeeks} weeks</strong></div>
       <div><span>Weekly volume</span><strong>${estimate.weeklyVolume}</strong></div>
+      <div><span>Monthly volume</span><strong>${estimate.monthlyVolume}</strong></div>
       <div><span>Hours per week</span><strong>${estimate.hoursPerWeek}</strong></div>
+      <div><span>Monthly hours</span><strong>${estimate.monthlyHours}</strong></div>
+      <div><span>Avg handling time</span><strong>${estimate.averageHandlingMinutes} min</strong></div>
       <div><span>Error rate</span><strong>${Math.round(estimate.errorRate * 1000) / 10}%</strong></div>
+      <div><span>Rework records</span><strong>${estimate.errorCount}</strong></div>
       <div><span>Avg rework cost</span><strong>${money(estimate.errorCost)}</strong></div>
+      <div><span>Total rework cost</span><strong>${money(estimate.totalReworkCost)}</strong></div>
+      <div><span>Approval required</span><strong>${Math.round(estimate.approvalRate * 100)}%</strong></div>
     </div>
+
+    <div class="import-detail-grid">
+      <div class="case-guide import-note">
+        <h2>Data quality checks</h2>
+        <ul>
+          ${estimate.dataQuality
+            .map((item) => `<li><strong>${item.status}</strong> - ${item.label}: ${item.text}</li>`)
+            .join("")}
+        </ul>
+      </div>
+      <div class="case-guide import-note">
+        <h2>Error breakdown</h2>
+        ${
+          estimate.errorBreakdown.length
+            ? `<ul>${estimate.errorBreakdown
+                .map(([type, count]) => `<li><strong>${escapeHtml(type)}</strong> - ${count} records</li>`)
+                .join("")}</ul>`
+            : "<p>No rework or error records were found in this file.</p>"
+        }
+      </div>
+      <div class="case-guide import-note">
+        <h2>Systems found</h2>
+        <ul>
+          ${estimate.systemBreakdown
+            .map(([system, count]) => `<li><strong>${escapeHtml(system)}</strong> - ${count} records</li>`)
+            .join("")}
+        </ul>
+      </div>
+      <div class="case-guide import-note">
+        <h2>What will be updated</h2>
+        <p>Hours per week, weekly volume, error frequency, and rework cost per error will be filled from the uploaded file. Labour cost, TCO, overhead, city, and business context still need business review.</p>
+      </div>
+    </div>
+
     <div class="case-guide import-note">
-      <h2>What will be updated</h2>
-      <p>Hours per week, weekly volume, error frequency, and rework cost per error will be filled from the uploaded file. Labour cost, TCO, overhead, city, and business context still need business review.</p>
+      <h2>Record preview</h2>
+      <div class="import-table-wrap">
+        <table class="import-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Process ID</th>
+              <th>Minutes</th>
+              <th>Rework</th>
+              <th>Rework cost</th>
+              <th>System</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${estimate.sampleRows
+              .map(
+                (row) => `<tr>
+                  <td>${escapeHtml(row.date)}</td>
+                  <td>${escapeHtml(row.process_id)}</td>
+                  <td>${escapeHtml(row.handling_minutes)}</td>
+                  <td>${escapeHtml(row.error_rework)}</td>
+                  <td>${money(numberFrom(row.rework_cost))}</td>
+                  <td>${escapeHtml(row.system_used || "unspecified")}</td>
+                </tr>`
+              )
+              .join("")}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="case-guide import-note">
+      <h2>What this still does not know</h2>
+      <p>The dataset improves volume, time, and rework assumptions, but a reviewer still needs to confirm labour cost, overhead, automation TCO, implementation cost, process exceptions, and whether the process is actually stable enough to automate.</p>
     </div>
   `;
 }
@@ -535,6 +677,19 @@ dataImportFile.addEventListener("change", async () => {
     importedEstimates = estimateFromCsv(text);
     applyImportButton.disabled = false;
     renderImportPreview(importedEstimates, file.name);
+  } catch (error) {
+    renderImportError(error.message);
+  }
+});
+
+loadSampleDataButton.addEventListener("click", async () => {
+  try {
+    const response = await fetch("./data/sample-australia-invoice-process.csv");
+    if (!response.ok) throw new Error("The sample dataset could not be loaded.");
+    const text = await response.text();
+    importedEstimates = estimateFromCsv(text);
+    applyImportButton.disabled = false;
+    renderImportPreview(importedEstimates, "sample-australia-invoice-process.csv");
   } catch (error) {
     renderImportError(error.message);
   }

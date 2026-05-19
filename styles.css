@@ -632,6 +632,12 @@ button.secondary:hover {
   gap: 16px;
 }
 
+.import-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
 .import-note {
   margin-top: 0;
 }
@@ -639,6 +645,31 @@ button.secondary:hover {
 .data-page a {
   color: var(--accent-dark);
   font-weight: 900;
+}
+
+.import-table-wrap {
+  overflow-x: auto;
+}
+
+.import-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 680px;
+}
+
+.import-table th,
+.import-table td {
+  border-bottom: 1px solid var(--line);
+  padding: 10px;
+  text-align: left;
+}
+
+.import-table th {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .case-guide h2 {
@@ -798,9 +829,10 @@ button.secondary:hover {
   .explainer-grid,
   .case-grid,
   .case-detail-grid,
-  .case-example,
-  .case-metrics,
-  .model-flow,
+    .case-example,
+    .case-metrics,
+    .import-detail-grid,
+    .model-flow,
   .source-grid,
   .sample-grid {
     grid-template-columns: 1fr 1fr;
@@ -831,9 +863,10 @@ button.secondary:hover {
   .explainer-grid,
   .case-grid,
   .case-detail-grid,
-  .case-example,
-  .case-metrics,
-  .model-flow,
+    .case-example,
+    .case-metrics,
+    .import-detail-grid,
+    .model-flow,
   .source-grid,
   .sample-grid {
     grid-template-columns: 1fr;
