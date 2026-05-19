@@ -271,10 +271,12 @@ function buildPayback(netMonthlyBenefit, buildCost) {
   }
 
   const months = buildCost / netMonthlyBenefit;
+  const label = months < 1 ? "Under 1 month" : `${months.toFixed(1)} months`;
+
   return {
     months: Number(months.toFixed(1)),
-    label: `${months.toFixed(1)} months`,
-    explanation: `Estimated build-cost band is $${buildCost.toLocaleString()}, so payback is about ${months.toFixed(1)} months using net monthly benefit after TCO.`,
+    label,
+    explanation: `Estimated build-cost band is $${buildCost.toLocaleString()}, so payback is about ${label.toLowerCase()} using net monthly benefit after TCO.`,
   };
 }
 
@@ -322,6 +324,7 @@ function buildReasonCodes(input, monthlySaving, automationFitScore, businessValu
   if (automationFitScore >= 70) reasons.push("Strong fit: the task is repeatable and rule-friendly.");
   if (businessValueScore >= 65) reasons.push("High value: the process has enough cost, volume, or urgency.");
   if (monthlySaving >= 1200) reasons.push("Strong savings: estimated monthly capacity saving is meaningful.");
+  if (monthlySaving < 0) reasons.push("Cost warning: estimated automation TCO is higher than the monthly benefit.");
   if (input.judgementLevel === "high") reasons.push("Caution: high human judgement reduces full automation fit.");
   if (input.processClarity === "unclear") reasons.push("Blocker: the workflow is unclear or changes often.");
   if (input.toolComplexity === "many") reasons.push("Integration risk: many disconnected systems are involved.");
@@ -521,6 +524,27 @@ function buildRecommendation({
     return {
       solution: "Do not automate yet",
       summary: `This is a ${profile.keywords} process, but the current business case is weak. Automation is not the best next step yet because the expected saving is low or the process is not ready. The better first step is to document the workflow, reduce variation, improve data quality, and revisit automation once the process has more volume or clearer rules.`,
+    };
+  }
+
+  if (decision === "Document process first") {
+    return {
+      solution: "Document process before automation",
+      summary: `This is a ${profile.keywords} process with potential value, but the process is not ready for automation yet. The current workflow is unclear or changes too often, so automation could lock in a broken process. The safest next step is to document the workflow, define exceptions, and reassess ${profile.solution} after the process is stable.`,
+    };
+  }
+
+  if (decision === "Integrate systems first") {
+    return {
+      solution: "Integrate systems before automation",
+      summary: `This is a ${profile.keywords} process with some automation potential, but disconnected tools are the main blocker. The better first move is to map systems, data fields, and handoffs before building ${profile.solution}.`,
+    };
+  }
+
+  if (decision === "Use AI decision support") {
+    return {
+      solution: "Use AI decision support",
+      summary: `This is a ${profile.keywords} process, but high human judgement makes full automation risky. A better first step is AI-assisted triage, recommendations, or drafting while keeping a person responsible for final decisions.`,
     };
   }
 
