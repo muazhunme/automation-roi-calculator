@@ -587,7 +587,7 @@ function renderImportPreview(estimate, fileName) {
       </div>
       <div class="case-guide import-note">
         <h2>What will be updated</h2>
-        <p>Hours per week, weekly volume, error frequency, and rework cost per error will be filled from the uploaded file. Labour cost, TCO, overhead, city, and business context still need business review.</p>
+        <p>Hours per week, weekly volume, error frequency, and rework cost per error will be filled from the uploaded file. Cost and business-assumption fields are reset to 0 or neutral review defaults so old form values do not mix into the imported assessment.</p>
       </div>
     </div>
 
@@ -637,6 +637,36 @@ function renderImportError(message) {
       <p>${escapeHtml(message)}</p>
     </div>
   `;
+}
+
+function showPage(pageName) {
+  pageTabs.forEach((pageTab) => {
+    pageTab.classList.toggle("active", pageTab.dataset.page === pageName);
+  });
+  pages.forEach((page) => {
+    page.classList.toggle("active", page.id === `${pageName}Page`);
+  });
+}
+
+function applyImportedEstimates() {
+  form.elements.city.value = "sydney";
+  form.elements.industry.value = "accounting";
+  form.elements.businessArea.value = "finance";
+  form.elements.taskType.value = "invoice";
+  form.elements.hoursPerWeek.value = importedEstimates.hoursPerWeek;
+  form.elements.hourlyCost.value = 0;
+  form.elements.overheadPercent.value = 0;
+  form.elements.monthlyAutomationTco.value = 0;
+  form.elements.errorCost.value = importedEstimates.errorCost;
+  form.elements.opportunityValuePercent.value = 0;
+  form.elements.annualVolumeGrowth.value = 0;
+  form.elements.peopleInvolved.value = 0;
+  form.elements.weeklyVolume.value = importedEstimates.weeklyVolume;
+  form.elements.errorFrequency.value = importedEstimates.errorFrequency;
+  form.elements.processClarity.value = "partial";
+  form.elements.toolComplexity.value = "single";
+  form.elements.judgementLevel.value = "low";
+  form.elements.urgency.value = "medium";
 }
 
 form.addEventListener("submit", (event) => {
@@ -698,18 +728,9 @@ loadSampleDataButton.addEventListener("click", async () => {
 applyImportButton.addEventListener("click", () => {
   if (!importedEstimates) return;
 
-  form.elements.hoursPerWeek.value = importedEstimates.hoursPerWeek;
-  form.elements.weeklyVolume.value = importedEstimates.weeklyVolume;
-  form.elements.errorFrequency.value = importedEstimates.errorFrequency;
-  form.elements.errorCost.value = importedEstimates.errorCost;
+  applyImportedEstimates();
   calculateAndRender();
-
-  pageTabs.forEach((pageTab) => {
-    pageTab.classList.toggle("active", pageTab.dataset.page === "assessment");
-  });
-  pages.forEach((page) => {
-    page.classList.toggle("active", page.id === "assessmentPage");
-  });
+  showPage("assessment");
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
@@ -739,15 +760,7 @@ printButton.addEventListener("click", () => {
 pageTabs.forEach((tab) => {
   tab.addEventListener("click", () => {
     const pageName = tab.dataset.page;
-
-    pageTabs.forEach((pageTab) => {
-      pageTab.classList.toggle("active", pageTab === tab);
-    });
-
-    pages.forEach((page) => {
-      page.classList.toggle("active", page.id === `${pageName}Page`);
-    });
-
+    showPage(pageName);
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 });
