@@ -749,7 +749,10 @@ loadSampleDataButton.addEventListener("click", async () => {
   }
 });
 
-applyImportButton.addEventListener("click", () => {
+applyImportButton.addEventListener("click", (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+
   if (!importedEstimates) return;
 
   applyImportedEstimates();
