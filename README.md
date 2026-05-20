@@ -127,6 +127,8 @@ The Data Import page can read an Excel-exported CSV with columns such as `date`,
 
 The Benchmarks page compares the model against public before/after automation case studies from UiPath, Automation Anywhere/Jemena, and KPMG. Where public sources do not disclose every cost assumption, the app shows the added AUD assumptions clearly and reports the predicted-vs-published hours-saved variance.
 
+In the tested public benchmark cases, the calculator's predicted monthly hours saved closely matched the published post-automation results, with variance ranging from about 1% to 9%. This supports the model as a directional discovery tool, while still requiring company-specific validation before financial approval.
+
 ## Run Locally
 
 ```bash
