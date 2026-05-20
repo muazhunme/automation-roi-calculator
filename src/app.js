@@ -1,4 +1,4 @@
-import { calculateAutomationCase, sampleScenarios } from "./scoring.js";
+import { benchmarkCases, calculateAutomationCase, sampleScenarios } from "./scoring.js";
 
 const form = document.querySelector("#auditForm");
 const resetButton = document.querySelector("#resetButton");
@@ -6,6 +6,7 @@ const printButton = document.querySelector("#printButton");
 const saveScenarioButton = document.querySelector("#saveScenarioButton");
 const heroSampleButton = document.querySelector("#heroSampleButton");
 const sampleGrid = document.querySelector("#sampleGrid");
+const benchmarkGrid = document.querySelector("#benchmarkGrid");
 const savedScenarioGrid = document.querySelector("#savedScenarioGrid");
 const dataImportFile = document.querySelector("#dataImportFile");
 const loadSampleDataButton = document.querySelector("#loadSampleDataButton");
@@ -328,6 +329,89 @@ function renderSamples() {
         loadScenario(scenario);
       });
       return button;
+    })
+  );
+}
+
+function numericPublishedHours(value) {
+  const match = String(value).match(/\d+(\.\d+)?/);
+  return match ? Number(match[0]) : null;
+}
+
+function benchmarkAlignment(result, publishedMonthlyHoursSaved) {
+  const publishedHours = numericPublishedHours(publishedMonthlyHoursSaved);
+
+  if (!publishedHours) {
+    return {
+      label: "Directional check",
+      text: "Public source gives outcome metrics, but not enough exact before/after time data for a precise variance check.",
+    };
+  }
+
+  const ratio = result.estimatedHoursSaved / publishedHours;
+
+  if (ratio >= 0.6 && ratio <= 1.6) {
+    return {
+      label: "Aligned",
+      text: `Predicted ${result.estimatedHoursSaved} hours/month vs published ${publishedMonthlyHoursSaved} hours/month.`,
+    };
+  }
+
+  return {
+    label: "Review variance",
+    text: `Predicted ${result.estimatedHoursSaved} hours/month vs published ${publishedMonthlyHoursSaved} hours/month. Check assumptions before relying on this case.`,
+  };
+}
+
+function renderBenchmarks() {
+  benchmarkGrid.replaceChildren(
+    ...benchmarkCases.map((benchmark) => {
+      const result = calculateAutomationCase(benchmark.input);
+      const alignment = benchmarkAlignment(result, benchmark.publishedMonthlyHoursSaved);
+      const card = document.createElement("article");
+      card.className = "benchmark-card";
+      card.innerHTML = `
+        <div class="benchmark-card-header">
+          <span>${escapeHtml(benchmark.source)}</span>
+          <strong>${escapeHtml(benchmark.name)}</strong>
+          <small class="benchmark-pill">${alignment.label}</small>
+        </div>
+        <div class="benchmark-columns">
+          <div>
+            <h3>Public before data</h3>
+            <p>${escapeHtml(benchmark.publicBefore)}</p>
+          </div>
+          <div>
+            <h3>Published after result</h3>
+            <p>${escapeHtml(benchmark.publicAfter)}</p>
+          </div>
+        </div>
+        <div class="metric-grid benchmark-metrics">
+          <div><span>Model readiness</span><strong>${result.readinessScore}</strong></div>
+          <div><span>Model decision</span><strong>${escapeHtml(result.decision)}</strong></div>
+          <div><span>Predicted hours saved</span><strong>${result.estimatedHoursSaved}</strong></div>
+          <div><span>Published hours saved</span><strong>${escapeHtml(benchmark.publishedMonthlyHoursSaved)}</strong></div>
+          <div><span>Net monthly saving</span><strong>${money(result.monthlySaving)}</strong></div>
+          <div><span>Payback</span><strong>${escapeHtml(result.payback.label)}</strong></div>
+        </div>
+        <div class="case-guide benchmark-note">
+          <h3>Validation read</h3>
+          <p>${escapeHtml(alignment.text)}</p>
+          <p>${escapeHtml(benchmark.expectedDirection)}</p>
+        </div>
+        <div class="case-guide benchmark-note">
+          <h3>Assumptions added by this app</h3>
+          <p>${escapeHtml(benchmark.assumptions)}</p>
+        </div>
+        <div class="button-row benchmark-actions">
+          <button type="button" data-action="load">Load into calculator</button>
+          <a href="${benchmark.sourceUrl}" target="_blank" rel="noreferrer">Open source</a>
+        </div>
+      `;
+      card.querySelector('[data-action="load"]').addEventListener("click", () => {
+        loadScenario(benchmark.input);
+      });
+      return card;
     })
   );
 }
@@ -849,6 +933,7 @@ pageTabs.forEach((tab) => {
 });
 
 renderSamples();
+renderBenchmarks();
 renderSavedScenarios();
 clearForm();
 renderEmptyState();

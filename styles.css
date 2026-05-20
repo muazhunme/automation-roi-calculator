@@ -821,6 +821,107 @@ button.secondary:hover {
   line-height: 1.5;
 }
 
+.benchmark-grid {
+  display: grid;
+  gap: 18px;
+}
+
+.benchmark-card {
+  display: grid;
+  gap: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 22px;
+}
+
+.benchmark-card-header {
+  display: grid;
+  gap: 8px;
+}
+
+.benchmark-card-header span,
+.benchmark-pill {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.benchmark-card-header strong {
+  font-size: 1.45rem;
+}
+
+.benchmark-pill {
+  justify-self: start;
+  border: 1px solid #b9d8cd;
+  border-radius: 999px;
+  background: #eef8f4;
+  color: var(--accent-dark);
+  padding: 5px 9px;
+}
+
+.benchmark-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.benchmark-columns div,
+.benchmark-note {
+  border-left-color: var(--gold);
+}
+
+.benchmark-columns div {
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--gold);
+  border-radius: 8px;
+  background: #fbfcfa;
+  padding: 16px;
+}
+
+.benchmark-columns h3,
+.benchmark-note h3 {
+  margin: 0 0 8px;
+}
+
+.benchmark-columns p,
+.benchmark-note p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.benchmark-note {
+  margin: 0;
+}
+
+.benchmark-metrics {
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+
+.benchmark-actions {
+  align-items: center;
+}
+
+.benchmark-actions a {
+  display: inline-grid;
+  min-height: 44px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--ink);
+  font-weight: 800;
+  padding: 0 16px;
+  text-decoration: none;
+}
+
+.benchmark-actions a:hover {
+  background: #eef2ed;
+}
+
 @media (max-width: 900px) {
   .hero,
   .workspace {
@@ -844,6 +945,7 @@ button.secondary:hover {
     .case-metrics,
     .import-detail-grid,
     .model-flow,
+    .benchmark-columns,
   .source-grid,
   .sample-grid {
     grid-template-columns: 1fr 1fr;
@@ -878,6 +980,7 @@ button.secondary:hover {
     .case-metrics,
     .import-detail-grid,
     .model-flow,
+    .benchmark-columns,
   .source-grid,
   .sample-grid {
     grid-template-columns: 1fr;
@@ -899,6 +1002,7 @@ button.secondary:hover {
   .app-nav,
   .explainer-page,
   .data-page,
+  .benchmark-page,
   .case-page {
     display: none;
   }

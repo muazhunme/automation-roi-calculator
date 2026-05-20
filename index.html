@@ -15,6 +15,7 @@
       <nav class="app-nav" aria-label="Application pages">
         <button class="page-tab active" type="button" data-page="assessment">Assessment</button>
         <button class="page-tab" type="button" data-page="data">Data import</button>
+        <button class="page-tab" type="button" data-page="benchmarks">Benchmarks</button>
         <button class="page-tab" type="button" data-page="how">How it works</button>
         <button class="page-tab" type="button" data-page="case">Case study</button>
       </nav>
@@ -499,6 +500,30 @@
         </section>
       </section>
 
+      <section class="page benchmark-page" id="benchmarksPage">
+        <div class="section-heading">
+          <p class="eyebrow">Before / after validation</p>
+          <h1>Benchmark the calculator against public automation case studies</h1>
+          <p>
+            These examples use published before/after automation outcomes, then feed a matching set of before-assumptions
+            into the calculator. This checks whether the model is directionally realistic, not whether it can perfectly
+            recreate every company result.
+          </p>
+        </div>
+
+        <section class="case-guide">
+          <h2>How to read this page</h2>
+          <ol>
+            <li>Public before/after metrics come from named automation case studies.</li>
+            <li>When a source does not publish labour cost, TCO, overhead, or every exception detail, this app adds transparent AUD assumptions.</li>
+            <li>The model is considered useful when it makes the same business call and lands in a reasonable range for hours saved.</li>
+            <li>Any large variance is a signal to adjust assumptions, not hide the case.</li>
+          </ol>
+        </section>
+
+        <section class="benchmark-grid" id="benchmarkGrid" aria-live="polite"></section>
+      </section>
+
       <section class="page explainer-page" id="howPage">
         <div class="section-heading">
           <p class="eyebrow">Model explanation</p>
@@ -788,6 +813,6 @@
       </section>
     </main>
 
-    <script type="module" src="./src/app.js?v=20260520-import-stay"></script>
+    <script type="module" src="./src/app.js?v=20260520-benchmarks"></script>
   </body>
 </html>

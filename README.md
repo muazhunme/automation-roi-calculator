@@ -41,6 +41,7 @@ This project models that early discovery step with transparent, client-side scor
 - AI vs RPA vs integration recommendation
 - Sensitivity analysis
 - Case study and model explanation pages
+- Public case-study benchmark validation page
 - Saved scenarios in browser local storage
 - Stakeholder review checklist
 - Excel-compatible CSV data import
@@ -123,6 +124,8 @@ The scoring engine estimates:
 - delivery risks
 
 The Data Import page can read an Excel-exported CSV with columns such as `date`, `process_id`, `handling_minutes`, `error_rework`, and `rework_cost`. It uses that dataset to estimate weekly volume, hours per week, error frequency, and average rework cost.
+
+The Benchmarks page compares the model against public before/after automation case studies from UiPath and KPMG. Where public sources do not disclose every cost assumption, the app shows the added AUD assumptions clearly and treats the result as directional validation.
 
 ## Run Locally
 

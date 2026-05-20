@@ -192,6 +192,112 @@ export const sampleScenarios = [
   },
 ];
 
+export const benchmarkCases = [
+  {
+    name: "Major retailer invoice processing",
+    source: "UiPath / Accelirate",
+    sourceUrl: "https://www.uipath.com/resources/automation-case-studies/major-retailer-rpa",
+    publicBefore:
+      "About 7,000 invoices monthly. Manual processing took around 3-5 minutes per invoice.",
+    publicAfter:
+      "AI-enhanced robot processes invoices in about 30 seconds, 93% straight-through processing, and 160+ hours saved monthly.",
+    assumptions:
+      "Used 7,000 monthly invoices and calibrated the manual effort to the published 160+ hours/month saved instead of assuming every 3-5 minute invoice touch was fully recoverable. Added high error/rework exposure, many-system invoice workflow, and conservative AUD labour/TCO assumptions.",
+    expectedDirection:
+      "Should be a strong automation candidate with high savings, but not a perfect 100 because invoice exceptions and multiple systems still create delivery risk.",
+    input: {
+      city: "sydney",
+      businessArea: "finance",
+      taskType: "invoice",
+      hoursPerWeek: 50,
+      hourlyCost: 42,
+      overheadPercent: 30,
+      monthlyAutomationTco: 3500,
+      errorCost: 55,
+      opportunityValuePercent: 20,
+      annualVolumeGrowth: 8,
+      peopleInvolved: 8,
+      weeklyVolume: 1617,
+      industry: "retail",
+      errorFrequency: "high",
+      processClarity: "partial",
+      toolComplexity: "many",
+      judgementLevel: "medium",
+      urgency: "high",
+    },
+    publishedMonthlyHoursSaved: "160+",
+  },
+  {
+    name: "Canon USA document processing",
+    source: "UiPath / Canon USA",
+    sourceUrl: "https://www.uipath.com/resources/automation-case-studies/canon-leverages-ai-for-document-processing",
+    publicBefore:
+      "Finance team struggled with up to 5,000 vendor invoices monthly, four full-time employees, many exceptions, and 35-40% legacy extraction accuracy.",
+    publicAfter:
+      "About 4,500 invoices processed monthly, 90% straight-through processing, 6,000 hours saved annually, and a backlog eliminated.",
+    assumptions:
+      "Used 4 FTE-style effort at 154 hours/week, 4,500 monthly invoices, high exception/rework level, many tools, and partial process clarity because the old RegEx model was rigid.",
+    expectedDirection:
+      "Should recommend a strategic automation project and estimate substantial monthly hours saved near the published 500 hours/month benchmark.",
+    input: {
+      city: "sydney",
+      businessArea: "finance",
+      taskType: "invoice",
+      hoursPerWeek: 154,
+      hourlyCost: 45,
+      overheadPercent: 30,
+      monthlyAutomationTco: 4500,
+      errorCost: 60,
+      opportunityValuePercent: 20,
+      annualVolumeGrowth: 5,
+      peopleInvolved: 4,
+      weeklyVolume: 1039,
+      industry: "accounting",
+      errorFrequency: "high",
+      processClarity: "partial",
+      toolComplexity: "many",
+      judgementLevel: "medium",
+      urgency: "high",
+    },
+    publishedMonthlyHoursSaved: "500",
+  },
+  {
+    name: "Bank invoice approval workflow",
+    source: "KPMG process automation example",
+    sourceUrl:
+      "https://assets.kpmg.com/content/dam/kpmg/mt/pdf/2022/03/business-process-re-engineering-and-automation.pdf",
+    publicBefore:
+      "Invoice approval process took about 2.5 hours daily before automation.",
+    publicAfter:
+      "Invoice approval process reduced to about 30 minutes daily, saving roughly 2 hours per working day.",
+    assumptions:
+      "Used 12.5 hours/week before automation, roughly 25 approvals/week, approval workflow task type, clear process, few systems, low judgement, and conservative monthly TCO.",
+    expectedDirection:
+      "Should be a good workflow automation candidate with moderate savings and an hours-saved estimate near 40-45 hours/month.",
+    input: {
+      city: "sydney",
+      businessArea: "finance",
+      taskType: "approval",
+      hoursPerWeek: 12.5,
+      hourlyCost: 38,
+      overheadPercent: 25,
+      monthlyAutomationTco: 500,
+      errorCost: 35,
+      opportunityValuePercent: 15,
+      annualVolumeGrowth: 4,
+      peopleInvolved: 3,
+      weeklyVolume: 25,
+      industry: "accounting",
+      errorFrequency: "medium",
+      processClarity: "clear",
+      toolComplexity: "few",
+      judgementLevel: "low",
+      urgency: "medium",
+    },
+    publishedMonthlyHoursSaved: "43",
+  },
+];
+
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
 }
