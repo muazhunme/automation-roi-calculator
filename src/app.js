@@ -591,10 +591,13 @@ function renderImportPreview(estimate, fileName) {
             .join("")}
         </ul>
       </div>
-      <div class="case-guide import-note">
-        <h2>What will be updated</h2>
-        <p>Hours per week, weekly volume, error frequency, and rework cost per error will be filled from the uploaded file. Cost and business-assumption fields are reset to 0 or neutral review defaults so old form values do not mix into the imported assessment.</p>
+    <div class="case-guide import-note">
+      <h2>What will be updated</h2>
+      <p>Hours per week, weekly volume, error frequency, and rework cost per error will be filled from the uploaded file. Cost and business-assumption fields are reset to 0 or neutral review defaults so old form values do not mix into the imported assessment.</p>
+      <div class="button-row">
+        <button type="button" id="viewAssessmentButton">View updated assessment</button>
       </div>
+    </div>
     </div>
 
     <div class="case-guide import-note">
@@ -683,8 +686,10 @@ function finishDatasetImport(fileName) {
     importedEstimates.errorRate * 1000
   ) / 10}% error rate, and ${money(importedEstimates.errorCost)} average rework cost. Other numeric assumptions were reset to 0.`;
   calculateAndRender();
-  showPage("assessment");
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  document.querySelector("#viewAssessmentButton")?.addEventListener("click", () => {
+    showPage("assessment");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
 }
 
 form.addEventListener("submit", (event) => {
