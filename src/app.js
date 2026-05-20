@@ -4,6 +4,7 @@ const form = document.querySelector("#auditForm");
 const resetButton = document.querySelector("#resetButton");
 const printButton = document.querySelector("#printButton");
 const saveScenarioButton = document.querySelector("#saveScenarioButton");
+const heroSampleButton = document.querySelector("#heroSampleButton");
 const sampleGrid = document.querySelector("#sampleGrid");
 const savedScenarioGrid = document.querySelector("#savedScenarioGrid");
 const dataImportFile = document.querySelector("#dataImportFile");
@@ -305,6 +306,13 @@ function calculateAndRender() {
   renderResults(calculateAutomationCase(input));
 }
 
+function loadScenario(scenario) {
+  latestImportMessage = "";
+  writeForm(scenario);
+  calculateAndRender();
+  showPage("assessment");
+}
+
 function renderSamples() {
   sampleGrid.replaceChildren(
     ...sampleScenarios.map((scenario) => {
@@ -317,8 +325,7 @@ function renderSamples() {
         <small>${scenario.hoursPerWeek} hrs/week &middot; ${scenario.weeklyVolume} items/week</small>
       `;
       button.addEventListener("click", () => {
-        writeForm(scenario);
-        calculateAndRender();
+        loadScenario(scenario);
       });
       return button;
     })
@@ -828,6 +835,11 @@ printButton.addEventListener("click", () => {
   window.print();
 });
 
+heroSampleButton.addEventListener("click", () => {
+  loadScenario(sampleScenarios[0]);
+  document.querySelector("#auditForm").scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
 pageTabs.forEach((tab) => {
   tab.addEventListener("click", () => {
     const pageName = tab.dataset.page;
@@ -838,5 +850,5 @@ pageTabs.forEach((tab) => {
 
 renderSamples();
 renderSavedScenarios();
-writeForm(sampleScenarios[0]);
-calculateAndRender();
+clearForm();
+renderEmptyState();

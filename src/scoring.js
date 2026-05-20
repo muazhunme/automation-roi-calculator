@@ -107,6 +107,27 @@ const cityCostIndexes = {
 
 export const sampleScenarios = [
   {
+    name: "Enterprise approval + compliance pack",
+    city: "sydney",
+    businessArea: "compliance",
+    taskType: "complianceEvidence",
+    hoursPerWeek: 34,
+    hourlyCost: 62,
+    overheadPercent: 38,
+    monthlyAutomationTco: 950,
+    errorCost: 180,
+    opportunityValuePercent: 35,
+    annualVolumeGrowth: 18,
+    peopleInvolved: 8,
+    weeklyVolume: 320,
+    industry: "healthcare",
+    errorFrequency: "high",
+    processClarity: "partial",
+    toolComplexity: "many",
+    judgementLevel: "medium",
+    urgency: "high",
+  },
+  {
     name: "Invoice processing",
     city: "sydney",
     businessArea: "finance",
