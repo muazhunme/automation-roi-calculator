@@ -109,53 +109,53 @@
           <div class="field-grid">
             <label>
               <span class="label-row">Hours per week <span class="info-tip" title="Estimate the total human hours spent on this process each week across all people involved.">i</span></span>
-              <input id="hoursPerWeek" name="hoursPerWeek" type="number" min="1" max="1000" value="12" />
+              <input id="hoursPerWeek" name="hoursPerWeek" type="number" min="0" max="1000" step="0.1" value="12" />
             </label>
 
             <label>
               <span class="label-row">Hourly cost ($) <span class="info-tip" title="Enter the base hourly labour cost before benefits, tools, equipment, and overhead are added.">i</span></span>
-              <input id="hourlyCost" name="hourlyCost" type="number" min="0" max="300" value="35" />
+              <input id="hourlyCost" name="hourlyCost" type="number" min="0" max="300" step="0.01" value="35" />
             </label>
           </div>
 
           <div class="field-grid">
             <label>
               <span class="label-row">Labour overhead (%) <span class="info-tip" title="Add the extra cost of employing someone beyond wages, such as payroll tax, benefits, equipment, software, and management overhead.">i</span></span>
-              <input id="overheadPercent" name="overheadPercent" type="number" min="0" max="100" value="30" />
+              <input id="overheadPercent" name="overheadPercent" type="number" min="0" max="100" step="0.1" value="30" />
             </label>
 
             <label>
               <span class="label-row">Monthly automation TCO ($) <span class="info-tip" title="Estimate ongoing automation ownership costs, including licensing, maintenance, support, monitoring, and platform fees.">i</span></span>
-              <input id="monthlyAutomationTco" name="monthlyAutomationTco" type="number" min="0" max="50000" value="350" />
+              <input id="monthlyAutomationTco" name="monthlyAutomationTco" type="number" min="0" max="50000" step="0.01" value="350" />
             </label>
           </div>
 
           <div class="field-grid">
             <label>
               <span class="label-row">Rework cost per error ($) <span class="info-tip" title="Estimate the average cost of one mistake, including correction time, delays, refunds, penalties, or customer impact.">i</span></span>
-              <input id="errorCost" name="errorCost" type="number" min="0" max="5000" value="45" />
+              <input id="errorCost" name="errorCost" type="number" min="0" max="5000" step="0.01" value="45" />
             </label>
 
             <label>
               <span class="label-row">Annual volume growth (%) <span class="info-tip" title="Estimate how much the process volume may grow over the next year. Growth helps show automation scalability.">i</span></span>
-              <input id="annualVolumeGrowth" name="annualVolumeGrowth" type="number" min="0" max="200" value="15" />
+              <input id="annualVolumeGrowth" name="annualVolumeGrowth" type="number" min="0" max="200" step="0.1" value="15" />
             </label>
           </div>
 
           <label>
             <span class="label-row">Opportunity value of freed time (%) <span class="info-tip" title="Estimate the extra value created when saved employee time is redirected to higher-value work instead of manual admin.">i</span></span>
-            <input id="opportunityValuePercent" name="opportunityValuePercent" type="number" min="0" max="100" value="25" />
+            <input id="opportunityValuePercent" name="opportunityValuePercent" type="number" min="0" max="100" step="0.1" value="25" />
           </label>
 
           <div class="field-grid">
             <label>
               <span class="label-row">People involved <span class="info-tip" title="Enter how many people touch this process. More handoffs can increase coordination cost and automation value.">i</span></span>
-              <input id="peopleInvolved" name="peopleInvolved" type="number" min="0" max="50" value="3" />
+              <input id="peopleInvolved" name="peopleInvolved" type="number" min="0" max="50" step="1" value="3" />
             </label>
 
             <label>
               <span class="label-row">Weekly volume <span class="info-tip" title="Enter the number of transactions, records, invoices, emails, approvals, or cases handled each week.">i</span></span>
-              <input id="weeklyVolume" name="weeklyVolume" type="number" min="1" max="20000" value="80" />
+              <input id="weeklyVolume" name="weeklyVolume" type="number" min="0" max="20000" step="0.1" value="80" />
             </label>
           </div>
 
