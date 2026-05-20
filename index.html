@@ -673,11 +673,19 @@
           </article>
           <article>
             <h2>Data import</h2>
-            <p>Excel-exported CSV files can improve the estimate by calculating volume, handling time, error rate, and rework cost from real process records.</p>
+            <p>CSV files and Excel workbooks can improve the estimate by calculating volume, handling time, error rate, rework cost, and optional cost assumptions from real process records.</p>
           </article>
           <article>
             <h2>Risk range</h2>
-            <p>The report shows conservative, expected, and optimistic outcomes so reviewers can see uncertainty instead of trusting one fixed number.</p>
+            <p>The report shows conservative, expected, and optimistic outcomes, including what assumptions changed in each case.</p>
+          </article>
+          <article>
+            <h2>Formula documentation</h2>
+            <p>The Formulas page documents the scoring logic, cost formulas, weighting approach, confidence rules, and risk-band assumptions for review.</p>
+          </article>
+          <article>
+            <h2>Benchmark validation</h2>
+            <p>The Benchmarks page compares model outputs with published automation outcomes, while clearly separating public facts from added assumptions.</p>
           </article>
         </div>
 
@@ -698,6 +706,22 @@
             <li>Error saving = weekly volume x 4.33 x estimated error rate x rework cost x automation coverage.</li>
             <li>Net monthly saving = labour saving + error saving + opportunity value - monthly automation TCO.</li>
             <li>Payback = estimated build-cost band divided by net monthly saving, only when the saving is meaningful.</li>
+            <li>Risk bands use conservative, expected, and optimistic assumptions so reviewers can see uncertainty instead of one fixed answer.</li>
+          </ol>
+        </section>
+
+        <section class="case-guide">
+          <h2>Excel workbook import</h2>
+          <p>
+            The importer now accepts `.xlsx` workbooks as well as CSV files. A workbook can include a process log plus
+            optional sheets for labour rates, cost assumptions, and after-automation results. This makes the calculator
+            closer to a real discovery workflow because finance, operations, and process logs can be reviewed together.
+          </p>
+          <ol>
+            <li><strong>process_log</strong> holds the event-level records used to estimate time, volume, errors, and systems.</li>
+            <li><strong>labour_rates</strong> can provide hourly cost and overhead assumptions.</li>
+            <li><strong>cost_assumptions</strong> can provide monthly TCO, opportunity value, and growth assumptions.</li>
+            <li><strong>after_results</strong> can hold actual saved-hours results for validation after an automation goes live.</li>
           </ol>
         </section>
 
@@ -741,6 +765,16 @@
               <span>UiPath Docs</span>
               <strong>Business ROI template</strong>
               <small>Shows how automation ROI can be tracked through time saved, money saved, and process-level ROI fields.</small>
+            </a>
+            <a href="https://docs.uipath.com/insights/automation-cloud/latest/user-guide/automation-roi-comparison" target="_blank" rel="noreferrer">
+              <span>UiPath Docs</span>
+              <strong>Automation ROI comparison</strong>
+              <small>Relevant to comparing estimated benefits with actual hours saved after automation.</small>
+            </a>
+            <a href="https://learn.microsoft.com/en-us/power-automate/process-mining-processes-and-data" target="_blank" rel="noreferrer">
+              <span>Microsoft Learn</span>
+              <strong>Process mining data requirements</strong>
+              <small>Explains event-log requirements such as case ID, activity name, and timestamps for process analysis.</small>
             </a>
             <a href="https://tei.forrester.com/go/microsoft/powerautomatetei/" target="_blank" rel="noreferrer">
               <span>Forrester / Microsoft</span>
@@ -798,9 +832,10 @@
         <section class="case-guide">
           <h2>Real-world validation</h2>
           <p>
-            I tested the model against public before-and-after automation case studies from UiPath, Canon, Jemena, and KPMG.
+            I tested the model against public before-and-after automation case studies from UiPath, Canon, Jemena, KPMG,
+            CureMed, GeBBS, Nividous, Accelirate, and Innoira.
             In these benchmark checks, the calculator's predicted monthly hours saved closely matched the published
-            post-automation results, with variance ranging from about 1% to 9%.
+            post-automation results, with variance ranging from about 0% to 9%.
           </p>
           <p>
             This shows the model is directionally aligned with real automation outcomes. It is still a discovery tool, so a
@@ -820,7 +855,7 @@
           </article>
           <article>
             <h2>Result</h2>
-            <p>The app produces an explainable recommendation, roadmap, checklist, workflow comparison, and printable report.</p>
+            <p>The app produces an explainable recommendation, roadmap, checklist, uncertainty range, formula documentation, benchmark comparison, and printable report.</p>
           </article>
         </div>
 
@@ -884,14 +919,14 @@
             <h2>Business deliverable</h2>
             <p>
               The output acts like a lightweight consulting report: recommendation, reason codes, ROI estimate, risk severity,
-              readiness checklist, required inputs, manual-versus-automated workflow, and a practical roadmap.
+              readiness checklist, required inputs, manual-versus-automated workflow, uncertainty bands, and a practical roadmap.
             </p>
           </article>
           <article>
             <h2>Technical implementation</h2>
             <p>
-              The project is built as a static HTML, CSS, and JavaScript app. All calculations run locally in the browser, so
-              it needs no backend, login, paid API, database, or customer data storage.
+              The project is built as a static HTML, CSS, and JavaScript app. Calculations and CSV or Excel workbook imports
+              run locally in the browser, so it needs no backend, login, paid API, database, or customer data storage.
             </p>
           </article>
           <article>
@@ -924,8 +959,9 @@
           <ol>
             <li>Ability to translate a business consulting problem into a working product.</li>
             <li>Understanding of ROI, TCO, opportunity cost, process readiness, and risk.</li>
-            <li>Practical frontend implementation with dashboard-style reporting and print output.</li>
+            <li>Practical frontend implementation with dashboard-style reporting, local data import, and print output.</li>
             <li>Product thinking: the app recommends the safest next move, not just the most exciting technology.</li>
+            <li>Model governance thinking: formulas, assumptions, benchmarks, and uncertainty are visible to reviewers.</li>
           </ol>
         </section>
       </section>
