@@ -309,11 +309,16 @@ function calculateAndRender() {
   renderResults(calculateAutomationCase(input));
 }
 
+function showAssessmentTop() {
+  showPage("assessment");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
 function loadScenario(scenario) {
   latestImportMessage = "";
   writeForm(scenario);
   calculateAndRender();
-  showPage("assessment");
+  showAssessmentTop();
 }
 
 function renderSamples() {
@@ -910,9 +915,9 @@ function finishDatasetImport(fileName) {
   ) / 10}% error rate, and ${money(importedEstimates.errorCost)} average rework cost. Fields not found in the dataset were left blank for review, and other numeric assumptions were reset to 0.`;
   calculateAndRender();
   document.querySelectorAll(".view-assessment-button").forEach((button) => button.addEventListener("click", () => {
-    showPage("assessment");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    showAssessmentTop();
   }));
+  showAssessmentTop();
 }
 
 form.addEventListener("submit", (event) => {
@@ -980,6 +985,7 @@ applyImportButton.addEventListener("click", (event) => {
 
   applyImportedEstimates();
   calculateAndRender();
+  showAssessmentTop();
 });
 
 clearImportButton.addEventListener("click", () => {
