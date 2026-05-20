@@ -226,6 +226,7 @@ export const benchmarkCases = [
       urgency: "high",
     },
     publishedMonthlyHoursSaved: "160+",
+    actualMonthlyHoursSaved: 160,
   },
   {
     name: "Canon USA document processing",
@@ -260,6 +261,43 @@ export const benchmarkCases = [
       urgency: "high",
     },
     publishedMonthlyHoursSaved: "500",
+    actualMonthlyHoursSaved: 500,
+  },
+  {
+    name: "Jemena invoice document automation",
+    source: "Automation Anywhere / Jemena",
+    sourceUrl:
+      "https://www.casestudies.com/company/automationanywhere/case-study/document-automation-sparks-a-new-era-in-jemenas-operations",
+    publicBefore:
+      "A utilities company had high invoice volume, parked-invoice backlogs taking up to eight days to resolve, and limited staff capacity before automation.",
+    publicAfter:
+      "Document automation processed 170,000 documents in six months, saved about 12,000 hours in five months, cut parked invoices to same-day resolution, and achieved 99.9% document accuracy.",
+    assumptions:
+      "Converted the published 12,000 hours saved over five months into 2,400 hours/month. Used enterprise-scale weekly volume, very high manual effort, many-system finance workflow, high urgency, and larger enterprise TCO assumptions.",
+    expectedDirection:
+      "Should identify this as an enterprise-scale strategic automation project with very high monthly savings and hours saved.",
+    input: {
+      city: "melbourne",
+      businessArea: "finance",
+      taskType: "invoice",
+      hoursPerWeek: 720,
+      hourlyCost: 44,
+      overheadPercent: 30,
+      monthlyAutomationTco: 18000,
+      errorCost: 70,
+      opportunityValuePercent: 20,
+      annualVolumeGrowth: 10,
+      peopleInvolved: 18,
+      weeklyVolume: 6538,
+      industry: "logistics",
+      errorFrequency: "high",
+      processClarity: "partial",
+      toolComplexity: "many",
+      judgementLevel: "medium",
+      urgency: "high",
+    },
+    publishedMonthlyHoursSaved: "2400",
+    actualMonthlyHoursSaved: 2400,
   },
   {
     name: "Bank invoice approval workflow",
@@ -295,6 +333,7 @@ export const benchmarkCases = [
       urgency: "medium",
     },
     publishedMonthlyHoursSaved: "43",
+    actualMonthlyHoursSaved: 43,
   },
 ];
 

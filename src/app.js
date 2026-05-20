@@ -333,33 +333,32 @@ function renderSamples() {
   );
 }
 
-function numericPublishedHours(value) {
-  const match = String(value).match(/\d+(\.\d+)?/);
-  return match ? Number(match[0]) : null;
-}
-
-function benchmarkAlignment(result, publishedMonthlyHoursSaved) {
-  const publishedHours = numericPublishedHours(publishedMonthlyHoursSaved);
+function benchmarkAlignment(result, benchmark) {
+  const publishedHours = benchmark.actualMonthlyHoursSaved;
 
   if (!publishedHours) {
     return {
       label: "Directional check",
+      errorLabel: "N/A",
       text: "Public source gives outcome metrics, but not enough exact before/after time data for a precise variance check.",
     };
   }
 
   const ratio = result.estimatedHoursSaved / publishedHours;
+  const errorPercent = Math.round(Math.abs(result.estimatedHoursSaved - publishedHours) / publishedHours * 100);
 
-  if (ratio >= 0.6 && ratio <= 1.6) {
+  if (ratio >= 0.75 && ratio <= 1.25) {
     return {
       label: "Aligned",
-      text: `Predicted ${result.estimatedHoursSaved} hours/month vs published ${publishedMonthlyHoursSaved} hours/month.`,
+      errorLabel: `${errorPercent}% error`,
+      text: `Predicted ${result.estimatedHoursSaved} hours/month vs published ${benchmark.publishedMonthlyHoursSaved} hours/month.`,
     };
   }
 
   return {
     label: "Review variance",
-    text: `Predicted ${result.estimatedHoursSaved} hours/month vs published ${publishedMonthlyHoursSaved} hours/month. Check assumptions before relying on this case.`,
+    errorLabel: `${errorPercent}% error`,
+    text: `Predicted ${result.estimatedHoursSaved} hours/month vs published ${benchmark.publishedMonthlyHoursSaved} hours/month. Check assumptions before relying on this case.`,
   };
 }
 
@@ -367,7 +366,7 @@ function renderBenchmarks() {
   benchmarkGrid.replaceChildren(
     ...benchmarkCases.map((benchmark) => {
       const result = calculateAutomationCase(benchmark.input);
-      const alignment = benchmarkAlignment(result, benchmark.publishedMonthlyHoursSaved);
+      const alignment = benchmarkAlignment(result, benchmark);
       const card = document.createElement("article");
       card.className = "benchmark-card";
       card.innerHTML = `
@@ -391,6 +390,7 @@ function renderBenchmarks() {
           <div><span>Model decision</span><strong>${escapeHtml(result.decision)}</strong></div>
           <div><span>Predicted hours saved</span><strong>${result.estimatedHoursSaved}</strong></div>
           <div><span>Published hours saved</span><strong>${escapeHtml(benchmark.publishedMonthlyHoursSaved)}</strong></div>
+          <div><span>Accuracy variance</span><strong>${escapeHtml(alignment.errorLabel)}</strong></div>
           <div><span>Net monthly saving</span><strong>${money(result.monthlySaving)}</strong></div>
           <div><span>Payback</span><strong>${escapeHtml(result.payback.label)}</strong></div>
         </div>
