@@ -335,6 +335,182 @@ export const benchmarkCases = [
     publishedMonthlyHoursSaved: "43",
     actualMonthlyHoursSaved: 43,
   },
+  {
+    name: "CureMed eligibility and claims RPA",
+    source: "CureMed",
+    sourceUrl: "https://www.curemed.co/case-studies/rpa-eligibility-claims-automation",
+    publicBefore:
+      "Billing staff spent about 25 hours weekly checking eligibility and claims status across seven payer portals.",
+    publicAfter:
+      "RPA bots saved 1,200+ staff hours annually, reduced eligibility errors by 72%, and cut claim-status turnaround from a full day to 90 minutes.",
+    assumptions:
+      "Converted 1,200 annual hours into 100 hours/month. Used healthcare revenue-cycle work, seven portals, medium judgement, high urgency, and conservative AUD-equivalent labour/TCO inputs.",
+    expectedDirection:
+      "Should recommend a system-integration/RPA project with meaningful savings but visible delivery risk from multiple portals.",
+    input: {
+      city: "brisbane",
+      businessArea: "support",
+      taskType: "dataEntry",
+      hoursPerWeek: 30,
+      hourlyCost: 34,
+      overheadPercent: 25,
+      monthlyAutomationTco: 1200,
+      errorCost: 65,
+      opportunityValuePercent: 15,
+      annualVolumeGrowth: 8,
+      peopleInvolved: 5,
+      weeklyVolume: 450,
+      industry: "healthcare",
+      errorFrequency: "high",
+      processClarity: "partial",
+      toolComplexity: "many",
+      judgementLevel: "medium",
+      urgency: "high",
+    },
+    publishedMonthlyHoursSaved: "100",
+    actualMonthlyHoursSaved: 100,
+  },
+  {
+    name: "Healthcare denial appeals automation",
+    source: "GeBBS Healthcare Solutions",
+    sourceUrl: "https://gebbs.com/case-studies/denials-appeals-automation-back-end/",
+    publicBefore:
+      "Manual appeal workflows had 24-48 hour appeal handling, 12% data error rate, manual tracking gaps, and high staff effort.",
+    publicAfter:
+      "Automation reduced appeal processing to under two hours, improved accuracy to 98%+, and saved 70+ staff hours weekly.",
+    assumptions:
+      "Converted 70 weekly hours into about 303 monthly hours saved. Used healthcare support/compliance workflow, high rework risk, many tools, and higher monthly TCO for regulated automation.",
+    expectedDirection:
+      "Should recommend a strategic automation project with strong value and compliance-sensitive risk controls.",
+    input: {
+      city: "sydney",
+      businessArea: "compliance",
+      taskType: "approval",
+      hoursPerWeek: 95,
+      hourlyCost: 40,
+      overheadPercent: 30,
+      monthlyAutomationTco: 2800,
+      errorCost: 120,
+      opportunityValuePercent: 15,
+      annualVolumeGrowth: 6,
+      peopleInvolved: 7,
+      weeklyVolume: 140,
+      industry: "healthcare",
+      errorFrequency: "high",
+      processClarity: "partial",
+      toolComplexity: "many",
+      judgementLevel: "medium",
+      urgency: "high",
+    },
+    publishedMonthlyHoursSaved: "303",
+    actualMonthlyHoursSaved: 303,
+  },
+  {
+    name: "Eyecare claims operations automation",
+    source: "Nividous",
+    sourceUrl:
+      "https://nividous.com/resources/case-studies/a-prominent-eyecare-group-utilizes-nividous-rpa-bots-to-automate-over-20-business-processes",
+    publicBefore:
+      "The client handled 10,000+ monthly claim verifications and 7,000+ monthly claim submissions across manual healthcare administration workflows.",
+    publicAfter:
+      "RPA bots automated 20+ processes, saved 400 staff hours monthly, improved turnaround time by 65%, and reduced human errors by 90%.",
+    assumptions:
+      "Used published 400 monthly saved hours, high healthcare claim volume, many cross-functional processes, high error exposure, and medium automation ownership cost.",
+    expectedDirection:
+      "Should show a high-value automation opportunity with significant but not perfect confidence because this is a multi-process program.",
+    input: {
+      city: "melbourne",
+      businessArea: "operations",
+      taskType: "dataEntry",
+      hoursPerWeek: 120,
+      hourlyCost: 36,
+      overheadPercent: 28,
+      monthlyAutomationTco: 3200,
+      errorCost: 55,
+      opportunityValuePercent: 15,
+      annualVolumeGrowth: 7,
+      peopleInvolved: 9,
+      weeklyVolume: 3926,
+      industry: "healthcare",
+      errorFrequency: "high",
+      processClarity: "partial",
+      toolComplexity: "many",
+      judgementLevel: "medium",
+      urgency: "high",
+    },
+    publishedMonthlyHoursSaved: "400",
+    actualMonthlyHoursSaved: 400,
+  },
+  {
+    name: "PEO invoice reconciliation automation",
+    source: "Accelirate",
+    sourceUrl: "https://www.accelirate.com/agentic-ai-invoice-automation-peo/",
+    publicBefore:
+      "Specialists had to monitor payment reports every 15 minutes, creating payroll-delay risk and high manual checking effort.",
+    publicAfter:
+      "Agentic automation reduced manual effort by 95%, cut reconciliation time by 70%, and saved 2,500+ hours annually.",
+    assumptions:
+      "Converted 2,500 annual hours into about 208 monthly hours saved. Used finance/HR invoice reconciliation, high urgency, many tools, and medium judgement for exceptions.",
+    expectedDirection:
+      "Should recommend strategic automation with high value because payroll risk and repetitive monitoring make the business case strong.",
+    input: {
+      city: "sydney",
+      businessArea: "finance",
+      taskType: "invoice",
+      hoursPerWeek: 62,
+      hourlyCost: 42,
+      overheadPercent: 30,
+      monthlyAutomationTco: 2500,
+      errorCost: 85,
+      opportunityValuePercent: 20,
+      annualVolumeGrowth: 6,
+      peopleInvolved: 6,
+      weeklyVolume: 900,
+      industry: "saas",
+      errorFrequency: "medium",
+      processClarity: "partial",
+      toolComplexity: "many",
+      judgementLevel: "medium",
+      urgency: "high",
+    },
+    publishedMonthlyHoursSaved: "208",
+    actualMonthlyHoursSaved: 208,
+  },
+  {
+    name: "Hospital eligibility verification automation",
+    source: "Innoira",
+    sourceUrl: "https://innoira.com/case-studies/healthcare-rpa-eligibility-verification/",
+    publicBefore:
+      "Staff spent four to six hours daily on manual insurance verification calls and portal lookups across 40+ payer portals.",
+    publicAfter:
+      "RPA reduced verification time from 15 minutes to under 45 seconds per patient and saved 25 staff hours daily.",
+    assumptions:
+      "Converted 25 saved staff hours per workday into about 541 monthly hours. Used many payer portals, high volume, high urgency, and healthcare-specific exception risk.",
+    expectedDirection:
+      "Should flag a very strong automation candidate with high value and integration complexity.",
+    input: {
+      city: "brisbane",
+      businessArea: "support",
+      taskType: "customerEmails",
+      hoursPerWeek: 160,
+      hourlyCost: 35,
+      overheadPercent: 25,
+      monthlyAutomationTco: 4200,
+      errorCost: 70,
+      opportunityValuePercent: 15,
+      annualVolumeGrowth: 8,
+      peopleInvolved: 12,
+      weeklyVolume: 2100,
+      industry: "healthcare",
+      errorFrequency: "high",
+      processClarity: "partial",
+      toolComplexity: "many",
+      judgementLevel: "medium",
+      urgency: "high",
+    },
+    publishedMonthlyHoursSaved: "541",
+    actualMonthlyHoursSaved: 541,
+  },
 ];
 
 function clamp(value, min, max) {
@@ -722,16 +898,22 @@ function buildRiskRange(monthlySaving, grossMonthlyBenefit, monthlyAutomationTco
       label: "Conservative",
       multiplier: 0.7,
       note: "Lower adoption, slower rollout, or more exception handling.",
+      assumptionsChanged: "Automation coverage -20%, gross benefit -30%, TCO unchanged.",
+      confidenceBand: "Use for approval if process data is weak or exceptions are high.",
     },
     {
       label: "Expected",
       multiplier: 1,
       note: "Uses the current calculator assumptions.",
+      assumptionsChanged: "Current form inputs, current coverage, current monthly TCO.",
+      confidenceBand: "Use as the base case after stakeholder review.",
     },
     {
       label: "Optimistic",
       multiplier: 1.25,
       note: "Cleaner data, stronger adoption, and fewer exceptions.",
+      assumptionsChanged: "Gross benefit +25%, TCO unchanged, fewer manual exceptions.",
+      confidenceBand: "Use only when data quality, adoption, and system access are strong.",
     },
   ];
 
@@ -754,6 +936,8 @@ function buildRiskRange(monthlySaving, grossMonthlyBenefit, monthlyAutomationTco
       yearlySaving,
       payback,
       note: scenario.note,
+      assumptionsChanged: scenario.assumptionsChanged,
+      confidenceBand: scenario.confidenceBand,
     };
   });
 }

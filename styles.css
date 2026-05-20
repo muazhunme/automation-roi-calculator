@@ -603,7 +603,8 @@ button.secondary:hover {
 }
 
 .explainer-grid,
-.case-grid {
+.case-grid,
+.formula-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
@@ -699,12 +700,14 @@ button.secondary:hover {
 }
 
 .explainer-grid article,
+.formula-grid article,
 .case-grid article,
 .case-detail-grid article {
   padding: 22px;
 }
 
 .explainer-grid h2,
+.formula-grid h2,
 .case-grid h2,
 .case-detail-grid h2,
 .case-example h2 {
@@ -712,12 +715,32 @@ button.secondary:hover {
 }
 
 .explainer-grid p,
+.formula-grid p,
 .case-grid p,
 .case-detail-grid p,
 .case-example p {
   margin: 0;
   color: var(--muted);
   line-height: 1.6;
+}
+
+.formula-grid article {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.formula-grid code {
+  display: block;
+  border: 1px solid #cfe5dd;
+  border-radius: 6px;
+  background: #eef8f4;
+  color: var(--accent-dark);
+  font-weight: 800;
+  line-height: 1.5;
+  margin-bottom: 12px;
+  padding: 10px;
+  white-space: normal;
 }
 
 .case-example {
@@ -939,6 +962,7 @@ button.secondary:hover {
   .insight-grid,
   .workflow-grid,
   .explainer-grid,
+  .formula-grid,
   .case-grid,
   .case-detail-grid,
     .case-example,
@@ -974,6 +998,7 @@ button.secondary:hover {
   .insight-grid,
   .workflow-grid,
   .explainer-grid,
+  .formula-grid,
   .case-grid,
   .case-detail-grid,
     .case-example,
@@ -1001,6 +1026,7 @@ button.secondary:hover {
   .samples,
   .app-nav,
   .explainer-page,
+  .formulas-page,
   .data-page,
   .benchmark-page,
   .case-page {

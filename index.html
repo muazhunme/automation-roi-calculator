@@ -9,6 +9,7 @@
     />
     <title>Business Automation ROI Calculator</title>
     <link rel="stylesheet" href="./styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
   </head>
   <body>
     <main class="app-shell">
@@ -16,6 +17,7 @@
         <button class="page-tab active" type="button" data-page="assessment">Assessment</button>
         <button class="page-tab" type="button" data-page="data">Data import</button>
         <button class="page-tab" type="button" data-page="benchmarks">Benchmarks</button>
+        <button class="page-tab" type="button" data-page="formulas">Formulas</button>
         <button class="page-tab" type="button" data-page="how">How it works</button>
         <button class="page-tab" type="button" data-page="case">Case study</button>
       </nav>
@@ -456,15 +458,15 @@
           <p class="eyebrow">Data-assisted assessment</p>
           <h1>Import process data from Excel</h1>
           <p>
-            Upload an Excel-compatible CSV export from invoices, tickets, CRM activity, approvals, or process logs.
-            The app estimates weekly volume, handling time, error frequency, and rework cost from real records.
+            Upload a CSV or Excel workbook from invoices, tickets, CRM activity, approvals, or process logs.
+            The app estimates weekly volume, handling time, error frequency, rework cost, and optional financial assumptions from real records.
           </p>
         </div>
 
         <section class="case-guide">
           <h2>Accepted file format</h2>
           <p>
-            Save the spreadsheet as CSV from Excel, then upload it here. The file stays in your browser and is not sent to a server.
+            Upload a CSV or an `.xlsx` workbook. The file stays in your browser and is not sent to a server.
           </p>
           <ol>
             <li><strong>date</strong> - process date, such as 2026-04-01.</li>
@@ -474,14 +476,19 @@
             <li><strong>rework_cost</strong> - estimated AUD cost of that rework item.</li>
           </ol>
           <p>
+            For Excel workbooks, use a <strong>process_log</strong> sheet for records. Optional sheets can be
+            <strong>labour_rates</strong>, <strong>cost_assumptions</strong>, and <strong>after_results</strong>
+            with two columns: field name and value.
+          </p>
+          <p>
             <a href="./data/sample-australia-invoice-process.csv" download>Download sample CSV dataset</a>
           </p>
         </section>
 
         <section class="import-panel">
           <label>
-            <span class="label-row">Upload CSV file <span class="info-tip" title="Export an Excel sheet as CSV, then upload it. The app reads common process columns and estimates calculator inputs.">i</span></span>
-            <input id="dataImportFile" type="file" accept=".csv,text/csv" />
+            <span class="label-row">Upload CSV or Excel file <span class="info-tip" title="Upload a CSV or .xlsx workbook. Excel workbooks can include process_log, labour_rates, cost_assumptions, and after_results sheets.">i</span></span>
+            <input id="dataImportFile" type="file" accept=".csv,text/csv,.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
           </label>
 
           <div class="button-row">
@@ -495,7 +502,7 @@
           <div class="section-heading compact">
             <p class="eyebrow">Import preview</p>
             <h2>No file imported yet</h2>
-            <p>Upload the sample CSV or your own Excel-exported CSV to preview calculated assumptions.</p>
+            <p>Upload the sample CSV or your own Excel workbook to preview calculated assumptions.</p>
           </div>
         </section>
       </section>
@@ -535,6 +542,89 @@
             <li><strong>Microsoft Power Automate process mining sample</strong> - fictitious but structured event-log CSV. Useful for testing import logic and process-mining style fields.</li>
             <li><strong>Company-owned logs</strong> - best option for true accuracy: before automation records, after automation records, labour rate, error/rework cost, TCO, and final hours saved.</li>
           </ol>
+        </section>
+      </section>
+
+      <section class="page formulas-page" id="formulasPage">
+        <div class="section-heading">
+          <p class="eyebrow">Formula documentation</p>
+          <h1>Formal assumptions behind the calculator</h1>
+          <p>
+            This page documents the scoring logic so a reviewer can challenge the model instead of treating the output
+            like a black box.
+          </p>
+        </div>
+
+        <div class="formula-grid">
+          <article>
+            <h2>Burdened labour cost</h2>
+            <code>hourly cost x city index x (1 + overhead %)</code>
+            <p>Used because real labour cost includes location, benefits, payroll costs, software, equipment, and management overhead.</p>
+          </article>
+          <article>
+            <h2>Manual monthly cost</h2>
+            <code>hours/week x burdened hourly cost x 4.33</code>
+            <p>Uses average weeks per month so weekly effort becomes a monthly financial estimate.</p>
+          </article>
+          <article>
+            <h2>Automation fit score</h2>
+            <code>task fit + clarity + judgement + tools + volume + error level</code>
+            <p>Measures whether the workflow is rule-based, stable, repetitive, low judgement, and technically practical.</p>
+          </article>
+          <article>
+            <h2>Business value score</h2>
+            <code>area weight + urgency + industry + volume + hours + people + cost + growth</code>
+            <p>Measures whether the workflow is worth improving based on cost, scale, pain, and future demand.</p>
+          </article>
+          <article>
+            <h2>Readiness score</h2>
+            <code>48% automation fit + 34% business value + 18% confidence</code>
+            <p>Fit is weighted highest so the calculator does not recommend automation just because a process is expensive.</p>
+          </article>
+          <article>
+            <h2>Automation coverage</h2>
+            <code>readiness score / 100, capped between 25% and 85%</code>
+            <p>The cap prevents unrealistic claims that automation removes all human effort.</p>
+          </article>
+          <article>
+            <h2>Labour saving</h2>
+            <code>manual monthly cost x automation coverage</code>
+            <p>Estimates the portion of human capacity that could realistically be freed.</p>
+          </article>
+          <article>
+            <h2>Error saving</h2>
+            <code>weekly volume x 4.33 x error rate x rework cost x coverage</code>
+            <p>Captures avoided rework, corrections, delays, and other measurable error costs.</p>
+          </article>
+          <article>
+            <h2>Net monthly saving</h2>
+            <code>labour saving + error saving + opportunity value - monthly TCO</code>
+            <p>Subtracts ongoing automation ownership cost so the report does not show gross benefit as profit.</p>
+          </article>
+          <article>
+            <h2>Payback</h2>
+            <code>estimated build cost / net monthly saving</code>
+            <p>Only shown when net monthly saving is meaningful. Weak savings are labelled as not meaningful yet.</p>
+          </article>
+          <article>
+            <h2>Confidence</h2>
+            <code>base confidence - unclear process - many tools - judgement-heavy work - low volume</code>
+            <p>Confidence falls when inputs are uncertain, systems are fragmented, or the workflow depends on subjective decisions.</p>
+          </article>
+          <article>
+            <h2>Risk bands</h2>
+            <code>conservative 70%, expected 100%, optimistic 125% of gross benefit</code>
+            <p>Shows best, expected, and worst cases with the assumption changes that created each scenario.</p>
+          </article>
+        </div>
+
+        <section class="case-guide">
+          <h2>Why weights exist</h2>
+          <p>
+            The model gives more weight to automation fit than financial value because a valuable but unstable process can
+            fail if it is automated too early. Business value still matters because an easy automation with tiny savings is
+            not always worth prioritising.
+          </p>
         </section>
       </section>
 
@@ -841,6 +931,6 @@
       </section>
     </main>
 
-    <script type="module" src="./src/app.js?v=20260520-real-validation"></script>
+    <script type="module" src="./src/app.js?v=20260520-industry-upgrades"></script>
   </body>
 </html>

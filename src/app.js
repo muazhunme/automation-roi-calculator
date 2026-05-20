@@ -269,6 +269,8 @@ function renderResults(result) {
         <small>${money(scenario.yearlySaving)} yearly saving</small>
         <small>Payback: ${scenario.payback}</small>
         <p>${scenario.note}</p>
+        <p><strong>Changed:</strong> ${scenario.assumptionsChanged}</p>
+        <p><strong>Use when:</strong> ${scenario.confidenceBand}</p>
       `;
       return card;
     })
@@ -677,6 +679,75 @@ function estimateFromCsv(text) {
   };
 }
 
+function sheetRowsToCsv(rows) {
+  return rows
+    .map((row) =>
+      row
+        .map((cell) => {
+          const value = cell == null ? "" : String(cell);
+          return `"${value.replaceAll('"', '""')}"`;
+        })
+        .join(",")
+    )
+    .join("\n");
+}
+
+function workbookSheetRows(workbook, preferredNames) {
+  const normalisedNames = workbook.SheetNames.map((name) => ({
+    name,
+    normalised: normaliseHeader(name),
+  }));
+  const match = preferredNames
+    .map(normaliseHeader)
+    .map((preferred) => normalisedNames.find((sheet) => sheet.normalised === preferred))
+    .find(Boolean);
+  const sheetName = match?.name || workbook.SheetNames[0];
+  return window.XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
+    header: 1,
+    raw: false,
+    defval: "",
+  });
+}
+
+function keyValueSheet(workbook, preferredNames) {
+  const rows = workbookSheetRows(workbook, preferredNames);
+  return Object.fromEntries(
+    rows
+      .filter((row) => row.length >= 2 && row[0])
+      .map((row) => [normaliseHeader(row[0]), row[1]])
+  );
+}
+
+function estimateFromWorkbook(buffer) {
+  if (!window.XLSX) {
+    throw new Error("Excel support could not load. Save the workbook as CSV or try again with an internet connection.");
+  }
+
+  const workbook = window.XLSX.read(buffer, { type: "array" });
+  const processRows = workbookSheetRows(workbook, ["process_log", "process log", "events", "data"]);
+  const estimate = estimateFromCsv(sheetRowsToCsv(processRows));
+  const labour = keyValueSheet(workbook, ["labour_rates", "labor_rates", "labour", "costs"]);
+  const costs = keyValueSheet(workbook, ["cost_assumptions", "assumptions", "tco"]);
+  const after = keyValueSheet(workbook, ["after_results", "after automation", "results"]);
+
+  estimate.workbookSheets = workbook.SheetNames;
+  estimate.workbookInputs = [
+    labour.hourly_cost ? `Hourly cost: ${money(numberFrom(labour.hourly_cost))}` : null,
+    labour.overhead_percent ? `Labour overhead: ${numberFrom(labour.overhead_percent)}%` : null,
+    costs.monthly_automation_tco ? `Monthly automation TCO: ${money(numberFrom(costs.monthly_automation_tco))}` : null,
+    costs.opportunity_value_percent ? `Opportunity value: ${numberFrom(costs.opportunity_value_percent)}%` : null,
+    costs.annual_volume_growth_percent ? `Annual volume growth: ${numberFrom(costs.annual_volume_growth_percent)}%` : null,
+    after.actual_monthly_hours_saved ? `After result: ${numberFrom(after.actual_monthly_hours_saved)} hours saved/month` : null,
+  ].filter(Boolean);
+  estimate.hourlyCost = numberFrom(labour.hourly_cost);
+  estimate.overheadPercent = numberFrom(labour.overhead_percent);
+  estimate.monthlyAutomationTco = numberFrom(costs.monthly_automation_tco);
+  estimate.opportunityValuePercent = numberFrom(costs.opportunity_value_percent);
+  estimate.annualVolumeGrowth = numberFrom(costs.annual_volume_growth_percent);
+  estimate.afterMonthlyHoursSaved = numberFrom(after.actual_monthly_hours_saved);
+  return estimate;
+}
+
 function renderImportPreview(estimate, fileName) {
   importResults.innerHTML = `
     <div class="section-heading compact">
@@ -702,6 +773,19 @@ function renderImportPreview(estimate, fileName) {
       <div><span>Total rework cost</span><strong>${money(estimate.totalReworkCost)}</strong></div>
       <div><span>Approval required</span><strong>${Math.round(estimate.approvalRate * 100)}%</strong></div>
     </div>
+    ${
+      estimate.workbookSheets
+        ? `<div class="case-guide import-note">
+            <h2>Workbook sheets read</h2>
+            <p>${estimate.workbookSheets.map(escapeHtml).join(", ")}</p>
+            ${
+              estimate.workbookInputs.length
+                ? `<ul>${estimate.workbookInputs.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`
+                : "<p>No labour, cost, or after-results sheets were found. The calculator used process-log fields only.</p>"
+            }
+          </div>`
+        : ""
+    }
 
     <div class="import-detail-grid">
       <div class="case-guide import-note">
@@ -732,7 +816,7 @@ function renderImportPreview(estimate, fileName) {
       </div>
     <div class="case-guide import-note">
       <h2>What will be updated</h2>
-      <p>Hours per week, weekly volume, error frequency, and rework cost per error will be filled from the uploaded file. Cost and business-assumption fields are reset to 0 or neutral review defaults so old form values do not mix into the imported assessment.</p>
+      <p>Hours per week, weekly volume, error frequency, and rework cost per error will be filled from the uploaded file. If an Excel workbook includes labour_rates or cost_assumptions sheets, those values are also used. Missing fields are reset to 0 or left blank so old form values do not mix into the imported assessment.</p>
       <div class="button-row">
         <button type="button" class="view-assessment-button">View updated assessment</button>
       </div>
@@ -802,12 +886,12 @@ function applyImportedEstimates() {
   form.elements.businessArea.value = importedEstimates.businessArea;
   form.elements.taskType.value = importedEstimates.taskType;
   form.elements.hoursPerWeek.value = importedEstimates.hoursPerWeek;
-  form.elements.hourlyCost.value = 0;
-  form.elements.overheadPercent.value = 0;
-  form.elements.monthlyAutomationTco.value = 0;
+  form.elements.hourlyCost.value = importedEstimates.hourlyCost || 0;
+  form.elements.overheadPercent.value = importedEstimates.overheadPercent || 0;
+  form.elements.monthlyAutomationTco.value = importedEstimates.monthlyAutomationTco || 0;
   form.elements.errorCost.value = importedEstimates.errorCost;
-  form.elements.opportunityValuePercent.value = 0;
-  form.elements.annualVolumeGrowth.value = 0;
+  form.elements.opportunityValuePercent.value = importedEstimates.opportunityValuePercent || 0;
+  form.elements.annualVolumeGrowth.value = importedEstimates.annualVolumeGrowth || 0;
   form.elements.peopleInvolved.value = 0;
   form.elements.weeklyVolume.value = importedEstimates.weeklyVolume;
   form.elements.errorFrequency.value = importedEstimates.errorFrequency;
@@ -860,13 +944,16 @@ dataImportFile.addEventListener("change", async () => {
   applyImportButton.disabled = true;
 
   if (!file) {
-    renderImportError("Choose an Excel-exported CSV file first.");
+    renderImportError("Choose a CSV or Excel workbook first.");
     return;
   }
 
   try {
-    const text = await file.text();
-    importedEstimates = estimateFromCsv(text);
+    if (file.name.toLowerCase().endsWith(".xlsx")) {
+      importedEstimates = estimateFromWorkbook(await file.arrayBuffer());
+    } else {
+      importedEstimates = estimateFromCsv(await file.text());
+    }
     finishDatasetImport(file.name);
   } catch (error) {
     renderImportError(error.message);

@@ -42,10 +42,12 @@ This project models that early discovery step with transparent, client-side scor
 - Sensitivity analysis
 - Case study and model explanation pages
 - Real-world benchmark validation page with published-vs-predicted hours-saved variance
+- Formal formula documentation page
 - Saved scenarios in browser local storage
 - Stakeholder review checklist
-- Excel-compatible CSV data import
+- CSV and Excel `.xlsx` data import
 - Sensitivity/risk range for conservative, expected, and optimistic cases
+- Confidence bands showing which assumptions changed in each risk scenario
 - Recommended automation type
 - Implementation timeline
 - Risk flags
@@ -123,11 +125,11 @@ The scoring engine estimates:
 - suggested roadmap
 - delivery risks
 
-The Data Import page can read an Excel-exported CSV with columns such as `date`, `process_id`, `handling_minutes`, `error_rework`, and `rework_cost`. It uses that dataset to estimate weekly volume, hours per week, error frequency, and average rework cost.
+The Data Import page can read a CSV or Excel `.xlsx` workbook with columns such as `date`, `process_id`, `handling_minutes`, `error_rework`, and `rework_cost`. It uses that dataset to estimate weekly volume, hours per week, error frequency, and average rework cost. Excel workbooks can also include optional `labour_rates`, `cost_assumptions`, and `after_results` sheets.
 
-The Benchmarks page compares the model against public before/after automation case studies from UiPath, Automation Anywhere/Jemena, and KPMG. Where public sources do not disclose every cost assumption, the app shows the added AUD assumptions clearly and reports the predicted-vs-published hours-saved variance.
+The Benchmarks page compares the model against public before/after automation case studies from UiPath, Automation Anywhere/Jemena, KPMG, CureMed, GeBBS, Nividous, Accelirate, and Innoira. Where public sources do not disclose every cost assumption, the app shows the added AUD assumptions clearly and reports the predicted-vs-published hours-saved variance.
 
-In the tested public benchmark cases, the calculator's predicted monthly hours saved closely matched the published post-automation results, with variance ranging from about 1% to 9%. This supports the model as a directional discovery tool, while still requiring company-specific validation before financial approval.
+In the tested public benchmark cases, the calculator's predicted monthly hours saved closely matched the published post-automation results, with variance ranging from about 0% to 9%. This supports the model as a directional discovery tool, while still requiring company-specific validation before financial approval.
 
 ## Run Locally
 
