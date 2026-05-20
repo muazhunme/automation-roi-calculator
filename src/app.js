@@ -15,6 +15,7 @@ const pageTabs = document.querySelectorAll(".page-tab");
 const pages = document.querySelectorAll(".page");
 const savedScenarioKey = "automationRoiSavedScenarios";
 let importedEstimates = null;
+let latestImportMessage = "";
 
 const fields = [
   "industry",
@@ -158,6 +159,8 @@ function renderEmptyState() {
   document.querySelector("#timeline").textContent = "--";
   document.querySelector("#summaryText").textContent =
     "Complete the intake form to generate an automation decision, ROI estimate, risks, and roadmap.";
+  document.querySelector("#importAppliedMessage").hidden = true;
+  document.querySelector("#importAppliedMessage").textContent = "";
   document.querySelector("#matrixText").textContent = "No impact-effort result yet.";
   document.querySelector("#matrixPoint").style.setProperty("--x", "50%");
   document.querySelector("#matrixPoint").style.setProperty("--y", "50%");
@@ -218,6 +221,9 @@ function renderResults(result) {
   document.querySelector("#roiCategory").textContent = result.roiCategory;
   document.querySelector("#timeline").textContent = result.timeline;
   document.querySelector("#summaryText").textContent = result.summary;
+  const importMessage = document.querySelector("#importAppliedMessage");
+  importMessage.hidden = latestImportMessage === "";
+  importMessage.textContent = latestImportMessage;
   document.querySelector(
     "#matrixText"
   ).textContent = `${result.matrix.quadrant} - ${result.matrix.explanation}`;
@@ -669,6 +675,18 @@ function applyImportedEstimates() {
   form.elements.urgency.value = "medium";
 }
 
+function finishDatasetImport(fileName) {
+  applyImportButton.disabled = false;
+  renderImportPreview(importedEstimates, fileName);
+  applyImportedEstimates();
+  latestImportMessage = `Dataset values from ${fileName} have been uploaded to the calculator: ${importedEstimates.recordCount} records, ${importedEstimates.hoursPerWeek} hours/week, ${importedEstimates.weeklyVolume} items/week, ${Math.round(
+    importedEstimates.errorRate * 1000
+  ) / 10}% error rate, and ${money(importedEstimates.errorCost)} average rework cost. Other numeric assumptions were reset to 0.`;
+  calculateAndRender();
+  showPage("assessment");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   calculateAndRender();
@@ -705,8 +723,7 @@ dataImportFile.addEventListener("change", async () => {
   try {
     const text = await file.text();
     importedEstimates = estimateFromCsv(text);
-    applyImportButton.disabled = false;
-    renderImportPreview(importedEstimates, file.name);
+    finishDatasetImport(file.name);
   } catch (error) {
     renderImportError(error.message);
   }
@@ -718,8 +735,7 @@ loadSampleDataButton.addEventListener("click", async () => {
     if (!response.ok) throw new Error("The sample dataset could not be loaded.");
     const text = await response.text();
     importedEstimates = estimateFromCsv(text);
-    applyImportButton.disabled = false;
-    renderImportPreview(importedEstimates, "sample-australia-invoice-process.csv");
+    finishDatasetImport("sample-australia-invoice-process.csv");
   } catch (error) {
     renderImportError(error.message);
   }
@@ -737,6 +753,7 @@ applyImportButton.addEventListener("click", () => {
 clearImportButton.addEventListener("click", () => {
   dataImportFile.value = "";
   importedEstimates = null;
+  latestImportMessage = "";
   applyImportButton.disabled = true;
   importResults.innerHTML = `
     <div class="section-heading compact">

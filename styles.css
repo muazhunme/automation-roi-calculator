@@ -133,6 +133,17 @@ select {
   border-left: 5px solid var(--accent);
 }
 
+.import-applied-message {
+  border: 1px solid #b9d8cd;
+  border-left: 5px solid var(--accent);
+  border-radius: 8px;
+  background: #eef8f4;
+  color: var(--accent-dark);
+  font-weight: 800;
+  line-height: 1.55;
+  padding: 14px 16px;
+}
+
 .advisor-card span {
   color: var(--muted);
   font-size: 0.76rem;
