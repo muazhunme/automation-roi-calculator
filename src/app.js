@@ -159,8 +159,9 @@ function renderEmptyState() {
   document.querySelector("#timeline").textContent = "--";
   document.querySelector("#summaryText").textContent =
     "Complete the intake form to generate an automation decision, ROI estimate, risks, and roadmap.";
-  document.querySelector("#importAppliedMessage").hidden = true;
-  document.querySelector("#importAppliedMessage").textContent = "";
+  const importMessage = document.querySelector("#importAppliedMessage");
+  importMessage.hidden = latestImportMessage === "";
+  importMessage.textContent = latestImportMessage;
   document.querySelector("#matrixText").textContent = "No impact-effort result yet.";
   document.querySelector("#matrixPoint").style.setProperty("--x", "50%");
   document.querySelector("#matrixPoint").style.setProperty("--y", "50%");
@@ -435,6 +436,42 @@ function errorFrequencyFromRate(rate) {
   return "low";
 }
 
+function inferBusinessArea(records) {
+  const text = records
+    .map((record) => `${record.owner_team || ""} ${record.department || ""} ${record.business_area || ""}`)
+    .join(" ")
+    .toLowerCase();
+
+  if (text.includes("finance") || text.includes("account")) return "finance";
+  if (text.includes("sales")) return "sales";
+  if (text.includes("hr") || text.includes("human resource")) return "hr";
+  if (text.includes("support") || text.includes("service")) return "support";
+  if (text.includes("compliance") || text.includes("audit")) return "compliance";
+  if (text.includes("operation")) return "operations";
+  return "";
+}
+
+function inferTaskType(records) {
+  const text = records.map((record) => record.process_type || record.task_type || "").join(" ").toLowerCase();
+
+  if (text.includes("invoice")) return "invoice";
+  if (text.includes("crm") || text.includes("lead")) return "crm";
+  if (text.includes("report")) return "reporting";
+  if (text.includes("approval")) return "approval";
+  if (text.includes("contract")) return "contract";
+  if (text.includes("data")) return "dataEntry";
+  if (text.includes("email")) return "customerEmails";
+  if (text.includes("compliance") || text.includes("evidence")) return "complianceEvidence";
+  return "";
+}
+
+function inferToolComplexity(systemBreakdown) {
+  if (systemBreakdown.length === 1 && systemBreakdown[0][0] !== "unspecified") return "single";
+  if (systemBreakdown.length >= 2 && systemBreakdown.length <= 3) return "few";
+  if (systemBreakdown.length > 3) return "many";
+  return "";
+}
+
 function formatDate(value) {
   return new Intl.DateTimeFormat("en-AU", {
     dateStyle: "medium",
@@ -532,11 +569,19 @@ function estimateFromCsv(text) {
     errorRate,
     errorFrequency: errorFrequencyFromRate(errorRate),
     errorCost,
+    businessArea: inferBusinessArea(validRecords),
+    taskType: inferTaskType(validRecords),
+    industry: "",
+    city: "",
+    processClarity: "",
+    judgementLevel: "",
+    urgency: "",
     totalReworkCost,
     approvalRate: approvalRequired / validRecords.length,
     dataQuality,
     errorBreakdown: topEntries(errorTypes),
     systemBreakdown: topEntries(systems),
+    toolComplexity: inferToolComplexity(topEntries(systems)),
     sampleRows: validRecords.slice(0, 5),
   };
 }
@@ -661,10 +706,10 @@ function showPage(pageName) {
 }
 
 function applyImportedEstimates() {
-  form.elements.city.value = "sydney";
-  form.elements.industry.value = "accounting";
-  form.elements.businessArea.value = "finance";
-  form.elements.taskType.value = "invoice";
+  form.elements.city.value = importedEstimates.city;
+  form.elements.industry.value = importedEstimates.industry;
+  form.elements.businessArea.value = importedEstimates.businessArea;
+  form.elements.taskType.value = importedEstimates.taskType;
   form.elements.hoursPerWeek.value = importedEstimates.hoursPerWeek;
   form.elements.hourlyCost.value = 0;
   form.elements.overheadPercent.value = 0;
@@ -675,10 +720,10 @@ function applyImportedEstimates() {
   form.elements.peopleInvolved.value = 0;
   form.elements.weeklyVolume.value = importedEstimates.weeklyVolume;
   form.elements.errorFrequency.value = importedEstimates.errorFrequency;
-  form.elements.processClarity.value = "partial";
-  form.elements.toolComplexity.value = "single";
-  form.elements.judgementLevel.value = "low";
-  form.elements.urgency.value = "medium";
+  form.elements.processClarity.value = importedEstimates.processClarity;
+  form.elements.toolComplexity.value = importedEstimates.toolComplexity;
+  form.elements.judgementLevel.value = importedEstimates.judgementLevel;
+  form.elements.urgency.value = importedEstimates.urgency;
 }
 
 function finishDatasetImport(fileName) {
@@ -687,7 +732,7 @@ function finishDatasetImport(fileName) {
   applyImportedEstimates();
   latestImportMessage = `Dataset values from ${fileName} have been uploaded to the calculator: ${importedEstimates.recordCount} records, ${importedEstimates.hoursPerWeek} hours/week, ${importedEstimates.weeklyVolume} items/week, ${Math.round(
     importedEstimates.errorRate * 1000
-  ) / 10}% error rate, and ${money(importedEstimates.errorCost)} average rework cost. Other numeric assumptions were reset to 0.`;
+  ) / 10}% error rate, and ${money(importedEstimates.errorCost)} average rework cost. Fields not found in the dataset were left blank for review, and other numeric assumptions were reset to 0.`;
   calculateAndRender();
   document.querySelectorAll(".view-assessment-button").forEach((button) => button.addEventListener("click", () => {
     showPage("assessment");

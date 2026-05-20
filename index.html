@@ -46,6 +46,7 @@
           <label>
             <span class="label-row">Business area <span class="info-tip" title="Choose the department or function that owns the manual process. This affects the business impact weighting.">i</span></span>
             <select id="businessArea" name="businessArea">
+              <option value=""></option>
               <option value="finance">Finance</option>
               <option value="sales">Sales</option>
               <option value="hr">HR</option>
@@ -58,6 +59,7 @@
           <label>
             <span class="label-row">Task type <span class="info-tip" title="Choose the closest type of work being assessed. This changes the recommended automation style and first feature.">i</span></span>
             <select id="taskType" name="taskType">
+              <option value=""></option>
               <option value="invoice">Invoice processing</option>
               <option value="crm">CRM updates</option>
               <option value="reporting">Weekly reporting</option>
@@ -72,6 +74,7 @@
           <label>
             <span class="label-row">Industry preset <span class="info-tip" title="Choose the closest industry. This slightly adjusts value for common high-impact areas like finance, compliance, operations, or support.">i</span></span>
             <select id="industry" name="industry">
+              <option value=""></option>
               <option value="accounting" selected>Accounting / finance</option>
               <option value="healthcare">Healthcare</option>
               <option value="retail">Retail</option>
@@ -85,6 +88,7 @@
           <label>
             <span class="label-row">Australian city <span class="info-tip" title="Keep the model in Australia and AUD. The city adjusts labour assumptions slightly for local cost differences.">i</span></span>
             <select id="city" name="city">
+              <option value=""></option>
               <option value="sydney" selected>Sydney</option>
               <option value="melbourne">Melbourne</option>
               <option value="brisbane">Brisbane</option>
@@ -154,6 +158,7 @@
           <label>
             <span class="label-row">Error frequency <span class="info-tip" title="Choose how often mistakes, rework, missing information, or manual corrections happen in this process.">i</span></span>
             <select id="errorFrequency" name="errorFrequency">
+              <option value=""></option>
               <option value="low">Low</option>
               <option value="medium" selected>Medium</option>
               <option value="high">High</option>
@@ -163,6 +168,7 @@
           <label>
             <span class="label-row">Process clarity <span class="info-tip" title="Choose how well the process is documented and understood. Unclear processes should usually be fixed before automation.">i</span></span>
             <select id="processClarity" name="processClarity">
+              <option value=""></option>
               <option value="clear" selected>Clear and documented</option>
               <option value="partial">Partially documented</option>
               <option value="unclear">Unclear or changes often</option>
@@ -172,6 +178,7 @@
           <label>
             <span class="label-row">Current tools <span class="info-tip" title="Choose how many systems, spreadsheets, inboxes, or apps the process depends on. More tools usually means more integration effort.">i</span></span>
             <select id="toolComplexity" name="toolComplexity">
+              <option value=""></option>
               <option value="single">One main system</option>
               <option value="few" selected>Two to three systems</option>
               <option value="many">Many disconnected tools</option>
@@ -181,6 +188,7 @@
           <label>
             <span class="label-row">Human judgement required <span class="info-tip" title="Choose how much subjective decision-making is needed. High judgement may suit AI assistance rather than full automation.">i</span></span>
             <select id="judgementLevel" name="judgementLevel">
+              <option value=""></option>
               <option value="low" selected>Low - mostly rules-based</option>
               <option value="medium">Medium - some exceptions</option>
               <option value="high">High - judgement-heavy</option>
@@ -190,6 +198,7 @@
           <label>
             <span class="label-row">Urgency / pain level <span class="info-tip" title="Choose how painful or urgent this process is for the business. Higher pain increases business value.">i</span></span>
             <select id="urgency" name="urgency">
+              <option value=""></option>
               <option value="low">Low</option>
               <option value="medium" selected>Medium</option>
               <option value="high">High</option>
