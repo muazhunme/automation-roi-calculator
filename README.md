@@ -155,39 +155,3 @@ The tests cover normal, low-value, unclear-process, judgement-heavy, high-TCO, a
 
 This is a discovery and screening tool, not a final financial approval model. A real business should validate time, labour cost, overhead, TCO, error/rework, and process assumptions with the relevant stakeholders before relying on the numbers.
 
-## Suggested GitHub Repository
-
-```text
-muazhunme/automation-roi-calculator
-```
-
-Suggested repository description:
-
-```text
-A business automation audit tool that estimates ROI, readiness, savings, risks, and best-fit automation options for manual workflows.
-```
-
-Suggested topics:
-
-```text
-automation, roi-calculator, business-analytics, rpa, crm, javascript, portfolio-project
-```
-
-## Portfolio Angle
-
-This project shows:
-
-- business analytics thinking
-- automation discovery logic
-- dashboard-style UI design
-- ROI modelling
-- explainable recommendations
-- practical product thinking for real companies
-
-## Future Improvements
-
-- Add printable report export
-- Add process comparison mode
-- Add impact vs effort matrix
-- Add CSV export
-- Add a deployment workflow for GitHub Pages
